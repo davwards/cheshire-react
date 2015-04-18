@@ -1,0 +1,24 @@
+.chess-board {
+  font-size: 48px;
+  border-collapse: collapse;
+
+  td {
+    width: 60px;
+    height: 60px;
+    border: solid black 1px;
+    text-align: center;
+    background: white;
+  }
+
+  tr:nth-child(even) {
+    td:nth-child(odd) {
+      background: silver;
+    }
+  }
+
+  tr:nth-child(odd) {
+    td:nth-child(even) {
+      background: silver;
+    }
+  }
+}

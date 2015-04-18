@@ -22,6 +22,7 @@
     "browserify": "^9.0.8",
     "gulp": "^3.8.11",
     "gulp-react": "^3.0.1",
+    "gulp-ruby-sass": "^1.0.1",
     "gulp-util": "^3.0.4",
     "reactify": "^1.1.0",
     "vinyl-source-stream": "^1.1.0",
