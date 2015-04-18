@@ -1,4 +1,11 @@
 .chess-board {
+
+  $light-square: #fff;
+  $dark-square: #ddd;
+  $hovered-square: #acf;
+
+  cursor: pointer;
+
   font-size: 48px;
   border-collapse: collapse;
 
@@ -7,18 +14,20 @@
     height: 60px;
     border: solid black 1px;
     text-align: center;
-    background: white;
-  }
+    background: $light-square;
 
-  tr:nth-child(even) {
-    td:nth-child(odd) {
-      background: silver;
+    transition: background 0.25s;
+
+    &:hover {
+      background: $hovered-square;
     }
   }
 
-  tr:nth-child(odd) {
-    td:nth-child(even) {
-      background: silver;
+  tr:nth-child(even) td:nth-child(odd), tr:nth-child(odd) td:nth-child(even) {
+    background: $dark-square;
+
+    &:hover {
+      background: $hovered-square;
     }
   }
 }
