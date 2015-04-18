@@ -1,0 +1,31 @@
+{
+  "name": "cheshire",
+  "version": "0.0.1",
+  "description": "Web Sockets-driven javascript application for playing live chess online",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "websockets",
+    "chess",
+    "react"
+  ],
+  "author": "David Edwards",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  },
+  "devDependencies": {
+    "browserify": "^9.0.8",
+    "gulp": "^3.8.11",
+    "gulp-react": "^3.0.1",
+    "reactify": "^1.1.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "react": "^0.13.1"
+  }
+}
