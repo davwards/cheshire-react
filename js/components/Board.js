@@ -1,33 +1,21 @@
 var React = require('react');
+var _ = require('lodash');
+
+var Square = require('./Square');
 
 var Board = React.createClass({
   render: function() {
+    var board = this.props.boardState;
+
     return (
       <table className="chess-board">
-        <tr>
-          <td>&#9820;</td><td>&#9822;</td><td>&#9821;</td><td>&#9819;</td><td>&#9818;</td><td>&#9821;</td><td>&#9822;</td><td>&#9820;</td>
-        </tr>
-        <tr>
-          <td>&#9823;</td><td>&#9823;</td><td>&#9823;</td><td>&#9823;</td><td>&#9823;</td><td>&#9823;</td><td>&#9823;</td><td>&#9823;</td>
-        </tr>
-        <tr>
-          <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td>&#9817;</td><td>&#9817;</td><td>&#9817;</td><td>&#9817;</td><td>&#9817;</td><td>&#9817;</td><td>&#9817;</td><td>&#9817;</td>
-        </tr>
-        <tr>
-          <td>&#9814;</td><td>&#9816;</td><td>&#9815;</td><td>&#9813;</td><td>&#9812;</td><td>&#9815;</td><td>&#9816;</td><td>&#9814;</td>
-        </tr>
+        { _.map(['a','b','c','d','e','f','g','h'], function(rank) { return (
+          <tr key={'rank-' + rank}>
+            { _.map(['1','2','3','4','5','6','7','8'], function(file) { return (
+              <Square key={rank+file} state={board[rank][file]} rank={rank} file={file}/>
+            ) }) }
+          </tr>);
+        }) }
       </table>
     );
   }
