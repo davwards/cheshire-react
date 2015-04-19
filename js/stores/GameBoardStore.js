@@ -124,7 +124,6 @@ AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case Actions.SELECT_PIECE:
       setSelected(action.rank, action.file);
-      _board[action.rank][action.file].selected = true;
       break;
 
     default:
