@@ -3,8 +3,9 @@
   $light-square: #fff;
   $dark-square: #ddd;
   $hovered-square: #acf;
+  $selected-square: #afc;
 
-  cursor: pointer;
+  cursor: default;
 
   font-size: 48px;
   border-collapse: collapse;
@@ -18,16 +19,25 @@
 
     transition: background 0.25s;
 
-    &:hover {
-      background: $hovered-square;
+    &.occupied-square {
+      cursor: pointer;
+      &:hover:not(.selected-square) {
+        background: $hovered-square;
+      }
+    }
+
+    &.selected-square {
+      background: $selected-square;
     }
   }
 
   tr:nth-child(even) td:nth-child(odd), tr:nth-child(odd) td:nth-child(even) {
-    background: $dark-square;
+    &:not(.selected-square) {
+      background: $dark-square;
 
-    &:hover {
-      background: $hovered-square;
+      &.occupied-square:hover {
+        background: $hovered-square;
+      }
     }
   }
 }

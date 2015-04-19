@@ -7,9 +7,13 @@ var Square = React.createClass({
 
     return (
       square.piece ?
-        (<td dangerouslySetInnerHTML={square.piece} className={this._classNames()}></td>) :
+        (<td dangerouslySetInnerHTML={square.piece} onClick={this._selectPiece} className={this._classNames()}></td>) :
         (<td className={this._classNames()}></td>)
     );
+  },
+
+  _selectPiece: function() {
+    CheshireActions.selectPiece(this.props.rank, this.props.file);
   },
 
   _classNames: function() {
@@ -17,6 +21,7 @@ var Square = React.createClass({
     var names = [];
 
     if(square.piece) names.push('occupied-square');
+    if(square.selected) names.push('selected-square');
 
     return names.join(' ');
   }

@@ -16,6 +16,18 @@ var CheshireApp = React.createClass({
 
   getInitialState: function() {
     return getAppState();
+  },
+
+  componentDidMount: function() {
+    GameBoardStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    GameBoardStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function() {
+    this.setState(getAppState());
   }
 });
 

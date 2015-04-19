@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var Pieces = require('../constants/Pieces');
+var Actions = require('../constants/Actions');
 var Events = require('../constants/Events');
 
 _board = {
@@ -90,6 +91,20 @@ _board = {
   },
 };
 
+function clearSelection() {
+  _.each(_board, function(rank){
+    _.each(rank, function(square) {
+      square.selected = false;
+    });
+  });
+}
+
+function setSelected(rank, file) {
+  clearSelection();
+  _board[rank][file].selected = true;
+  console.log('set selected: ' + rank + file);
+}
+
 var GameBoardStore = assign({}, EventEmitter.prototype, {
   getBoardState: function() {
     return _board;
@@ -106,6 +121,17 @@ var GameBoardStore = assign({}, EventEmitter.prototype, {
 });
 
 AppDispatcher.register(function(action) {
+  switch(action.actionType) {
+    case Actions.SELECT_PIECE:
+      setSelected(action.rank, action.file);
+      _board[action.rank][action.file].selected = true;
+      break;
+
+    default:
+      return;
+  }
+
+  GameBoardStore.emitChange();
 });
 
 module.exports = GameBoardStore;
