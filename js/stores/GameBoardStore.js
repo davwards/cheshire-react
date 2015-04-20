@@ -103,8 +103,9 @@ function clearSelection() {
 
 function setSelected(rank, file) {
   if(_selectedSquare) {
-    _board[rank][file] = _board[_selectedSquare.rank][_selectedSquare.file];
+    var movedPiece = _board[_selectedSquare.rank][_selectedSquare.file];
     _board[_selectedSquare.rank][_selectedSquare.file] = { piece: '', side: null }
+    _board[rank][file] = movedPiece;
     _board[rank][file].selected = false;
     _selectedSquare = null;
   }

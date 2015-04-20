@@ -103,6 +103,23 @@ describe('GameBoardStore', function() {
         expect(GameBoardStore.getBoardState()[sourceRank][sourceFile].selected).toBeFalsy();
         expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].selected).toBeFalsy();
       });
+
+      describe('and the new selection is the same as the old selection', function() {
+        var selectedRank = sourceRank;
+        var selectedFile = sourceFile;
+
+        it('does not delete the contents of the square', function() {
+          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].piece).toBeTruthy();
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].piece).toBeTruthy();
+        });
+      });
     });
 
     describe('Scenario: a sequence of moves', function() {
