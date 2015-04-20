@@ -121,7 +121,7 @@ var GameBoardStore = assign({}, EventEmitter.prototype, {
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case Actions.SELECT_PIECE:
+    case Actions.SELECT_SQUARE:
       setSelected(action.rank, action.file);
       break;
 

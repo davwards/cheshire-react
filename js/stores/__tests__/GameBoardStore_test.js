@@ -17,10 +17,10 @@ describe('GameBoardStore', function() {
     handleAction = AppDispatcher.register.mock.calls[0][0];
   });
 
-  describe('when given a PIECE_SELECTED action', function(){
+  describe('when given a SELECT_SQUARE action', function(){
     it('marks the appropriate square as selected', function(){
       handleAction({
-        actionType: Actions.SELECT_PIECE,
+        actionType: Actions.SELECT_SQUARE,
         rank: 'a',
         file: '1'
       });
@@ -30,13 +30,13 @@ describe('GameBoardStore', function() {
 
     it('clears previous selection', function(){
       handleAction({
-        actionType: Actions.SELECT_PIECE,
+        actionType: Actions.SELECT_SQUARE,
         rank: 'a',
         file: '1'
       });
 
       handleAction({
-        actionType: Actions.SELECT_PIECE,
+        actionType: Actions.SELECT_SQUARE,
         rank: 'a',
         file: '3'
       });

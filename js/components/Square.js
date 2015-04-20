@@ -13,7 +13,7 @@ var Square = React.createClass({
   },
 
   _selectPiece: function() {
-    CheshireActions.selectPiece(this.props.rank, this.props.file);
+    CheshireActions.selectSquare(this.props.rank, this.props.file);
   },
 
   _classNames: function() {
