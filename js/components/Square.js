@@ -7,8 +7,8 @@ var Square = React.createClass({
 
     return (
       square.piece ?
-        (<td dangerouslySetInnerHTML={square.piece} onClick={this._selectPiece} className={this._classNames()}></td>) :
-        (<td className={this._classNames()}></td>)
+        (<td dangerouslySetInnerHTML={square.piece} className={this._classNames()} onClick={this._selectPiece}></td>) :
+        (<td className={this._classNames()} onClick={this._selectPiece}></td>)
     );
   },
 

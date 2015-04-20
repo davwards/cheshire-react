@@ -91,6 +91,8 @@ _board = {
   },
 };
 
+var _selectedSquare;
+
 function clearSelection() {
   _.each(_board, function(rank){
     _.each(rank, function(square) {
@@ -100,8 +102,16 @@ function clearSelection() {
 }
 
 function setSelected(rank, file) {
-  clearSelection();
-  _board[rank][file].selected = true;
+  if(_selectedSquare) {
+    _board[rank][file] = _board[_selectedSquare.rank][_selectedSquare.file];
+    _board[_selectedSquare.rank][_selectedSquare.file] = { piece: '', side: null }
+    _board[rank][file].selected = false;
+    _selectedSquare = null;
+  }
+  else if(_board[rank][file].piece) {
+    _board[rank][file].selected = true;
+    _selectedSquare = { rank: rank, file: file };
+  }
 }
 
 var GameBoardStore = assign({}, EventEmitter.prototype, {
