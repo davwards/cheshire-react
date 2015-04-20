@@ -8,7 +8,6 @@ var CheshireApp = React.createClass({
   render: function() {
     return (
       <section>
-        <h1>Hello, World!!</h1>
         <Board boardState={this.state.board}/>
       </section>
     );
