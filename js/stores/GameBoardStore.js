@@ -102,7 +102,6 @@ function clearSelection() {
 function setSelected(rank, file) {
   clearSelection();
   _board[rank][file].selected = true;
-  console.log('set selected: ' + rank + file);
 }
 
 var GameBoardStore = assign({}, EventEmitter.prototype, {
