@@ -5,25 +5,21 @@
   $hovered-square: #acf;
   $selected-square: #afc;
 
-  cursor: default;
-
   font-size: 48px;
   border-collapse: collapse;
 
   td {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border: solid black 1px;
     text-align: center;
     background: $light-square;
 
     transition: background 0.25s;
 
-    &.occupied-square {
-      cursor: pointer;
-      &:hover:not(.selected-square) {
-        background: $hovered-square;
-      }
+    cursor: pointer;
+    &:hover:not(.selected-square) {
+      background: $hovered-square;
     }
 
     &.selected-square {
@@ -35,7 +31,7 @@
     &:not(.selected-square) {
       background: $dark-square;
 
-      &.occupied-square:hover {
+      &:hover {
         background: $hovered-square;
       }
     }
