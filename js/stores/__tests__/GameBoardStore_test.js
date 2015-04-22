@@ -1,9 +1,4 @@
 jest.dontMock('../GameBoardStore');
-jest.dontMock('../../constants/Actions');
-jest.dontMock('../../constants/Pieces');
-jest.dontMock('keymirror');
-jest.dontMock('object-assign');
-jest.dontMock('lodash');
 
 describe('GameBoardStore', function() {
   var handleAction;

@@ -14,10 +14,9 @@
     border: solid black 1px;
     text-align: center;
     background: $light-square;
-
     transition: background 0.25s;
-
     cursor: pointer;
+
     &:hover:not(.selected-square) {
       background: $hovered-square;
     }
