@@ -21,56 +21,16 @@ describe('Board model', function() {
       expect(board.position('a6').piece).toEqual(Pieces.WHITE_BISHOP);
       expect(board.position('a7').piece).toEqual(Pieces.WHITE_KNIGHT);
       expect(board.position('a8').piece).toEqual(Pieces.WHITE_ROOK);
-      expect(board.position('b1').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b2').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b3').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b4').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b5').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b6').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b7').piece).toEqual(Pieces.WHITE_PAWN);
-      expect(board.position('b8').piece).toEqual(Pieces.WHITE_PAWN);
+      expect(_.all(board.rank('b'), function(square) { return square.piece == Pieces.WHITE_PAWN; })).toBeTruthy();
+      expect(_.all(board.rank('a'), function(square) { return square.side == 'white'; })).toBeTruthy();
+      expect(_.all(board.rank('b'), function(square) { return square.side == 'white'; })).toBeTruthy();
 
-      expect(board.position('c1').piece).toBeFalsy();
-      expect(board.position('c2').piece).toBeFalsy();
-      expect(board.position('c3').piece).toBeFalsy();
-      expect(board.position('c4').piece).toBeFalsy();
-      expect(board.position('c5').piece).toBeFalsy();
-      expect(board.position('c6').piece).toBeFalsy();
-      expect(board.position('c7').piece).toBeFalsy();
-      expect(board.position('c8').piece).toBeFalsy();
-      expect(board.position('d1').piece).toBeFalsy();
-      expect(board.position('d2').piece).toBeFalsy();
-      expect(board.position('d3').piece).toBeFalsy();
-      expect(board.position('d4').piece).toBeFalsy();
-      expect(board.position('d5').piece).toBeFalsy();
-      expect(board.position('d6').piece).toBeFalsy();
-      expect(board.position('d7').piece).toBeFalsy();
-      expect(board.position('d8').piece).toBeFalsy();
-      expect(board.position('e1').piece).toBeFalsy();
-      expect(board.position('e2').piece).toBeFalsy();
-      expect(board.position('e3').piece).toBeFalsy();
-      expect(board.position('e4').piece).toBeFalsy();
-      expect(board.position('e5').piece).toBeFalsy();
-      expect(board.position('e6').piece).toBeFalsy();
-      expect(board.position('e7').piece).toBeFalsy();
-      expect(board.position('e8').piece).toBeFalsy();
-      expect(board.position('f1').piece).toBeFalsy();
-      expect(board.position('f2').piece).toBeFalsy();
-      expect(board.position('f3').piece).toBeFalsy();
-      expect(board.position('f4').piece).toBeFalsy();
-      expect(board.position('f5').piece).toBeFalsy();
-      expect(board.position('f6').piece).toBeFalsy();
-      expect(board.position('f7').piece).toBeFalsy();
-      expect(board.position('f8').piece).toBeFalsy();
+      expect(_.all(board.rank('c'), function(square) { return square.piece == ''; })).toBeTruthy();
+      expect(_.all(board.rank('d'), function(square) { return square.piece == ''; })).toBeTruthy();
+      expect(_.all(board.rank('e'), function(square) { return square.piece == ''; })).toBeTruthy();
+      expect(_.all(board.rank('f'), function(square) { return square.piece == ''; })).toBeTruthy();
 
-      expect(board.position('g1').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g2').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g3').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g4').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g5').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g6').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g7').piece).toEqual(Pieces.BLACK_PAWN);
-      expect(board.position('g8').piece).toEqual(Pieces.BLACK_PAWN);
+      expect(_.all(board.rank('g'), function(square) { return square.piece == Pieces.BLACK_PAWN; })).toBeTruthy();
       expect(board.position('h1').piece).toEqual(Pieces.BLACK_ROOK);
       expect(board.position('h2').piece).toEqual(Pieces.BLACK_KNIGHT);
       expect(board.position('h3').piece).toEqual(Pieces.BLACK_BISHOP);
@@ -79,11 +39,12 @@ describe('Board model', function() {
       expect(board.position('h6').piece).toEqual(Pieces.BLACK_BISHOP);
       expect(board.position('h7').piece).toEqual(Pieces.BLACK_KNIGHT);
       expect(board.position('h8').piece).toEqual(Pieces.BLACK_ROOK);
-
+      expect(_.all(board.rank('g'), function(square) { return square.side == 'black'; })).toBeTruthy();
+      expect(_.all(board.rank('h'), function(square) { return square.side == 'black'; })).toBeTruthy();
     });
 
     it('has all the pieces marked as unmoved', function() {
-      expect(_.all(board, function(rank){
+      expect(_.all(board.ranks, function(rank){
         return _.all(rank, function(square) {
           return !square.hasMoved
         });
@@ -91,7 +52,100 @@ describe('Board model', function() {
     });
 
     it('has all the positions marked as unselected', function() {
+      expect(_.all(board.ranks, function(rank){
+        return _.all(rank, function(square) {
+          return !square.selected
+        });
+      })).toBeTruthy();
+    });
+  });
 
+  describe('moving pieces', function(){
+    var board, start, destination;
+    beforeEach(function(){
+      board = new BoardModel();
+      start = 'b1';
+      destination = 'c1';
+    });
+
+    it('removes the piece from the starting postion', function(){
+      expect(board.position(start).piece).toBeTruthy();
+      board.move(start, destination);
+      expect(board.position(start).piece).toBeFalsy();
+    });
+
+    it('places the piece at its new location', function(){
+      var piece = board.position(start);
+
+      expect(board.position(destination)).not.toEqual(piece);
+      board.move(start, destination);
+      expect(board.position(destination)).toEqual(piece);
+    });
+
+    describe('when start and destination are the same', function() {
+      beforeEach(function(){
+        destination = start;
+      });
+
+      it('does not destroy the piece', function(){
+        expect(board.position(start).piece).toBeTruthy();
+        board.move(start, destination);
+        expect(board.position(start).piece).toBeTruthy();
+      });
+    });
+  });
+
+  describe('setting selection', function() {
+    var board, selectedPosition;
+    beforeEach(function(){
+      board = new BoardModel();
+      selectedPosition = 'a1';
+    });
+
+    it('sets the given position as selected', function() {
+      expect(board.position(selectedPosition).selected).toBeFalsy();
+      board.select(selectedPosition);
+      expect(board.position(selectedPosition).selected).toBeTruthy();
+    });
+
+    it('clears the previous selection', function() {
+      var previousSelection = 'h8';
+      expect(previousSelection).not.toEqual(selectedPosition);
+      board.select(previousSelection);
+
+      expect(board.position(previousSelection).selected).toBeTruthy();
+      board.select(selectedPosition);
+      expect(board.position(previousSelection).selected).toBeFalsy();
+    });
+  });
+
+  describe('clearBoard', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    it('removes all pieces from the board', function() {
+      expect(_.any(board.ranks, function(rank) {
+        return _.any(rank, function(square) { return square.piece; });
+      })).toBeTruthy();
+
+      board.clearBoard();
+
+      expect(_.any(board.ranks, function(rank) {
+        return _.any(rank, function(square) { return square.piece; });
+      })).toBeFalsy();
+    });
+  });
+
+  describe('placePiece', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    it('puts the given piece at the given position', function() {
+      var piece = { piece: Pieces.BLACK_ROOK, side: 'black' }
+
+      expect(board.position('e4')).not.toEqual(piece);
+      board.placePiece(piece, 'e4');
+      expect(board.position('e4')).toEqual(piece);
     });
   });
 });

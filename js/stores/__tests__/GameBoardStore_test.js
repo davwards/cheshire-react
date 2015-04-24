@@ -1,4 +1,5 @@
 jest.dontMock('../GameBoardStore');
+jest.dontMock('../../models/Board');
 
 describe('GameBoardStore', function() {
   var handleAction;
