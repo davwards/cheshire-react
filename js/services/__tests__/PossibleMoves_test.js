@@ -16,10 +16,10 @@ describe('Possible Moves', function() {
   });
 
   describe('for a pawn', function() {
-    var whitePawn1 = { piece: Pieces.WHITE_PAWN, side: 'white' };
-    var blackPawn1 = { piece: Pieces.BLACK_PAWN, side: 'black' };
-    var whitePawn2 = { piece: Pieces.WHITE_PAWN, side: 'white' };
-    var blackPawn2 = { piece: Pieces.BLACK_PAWN, side: 'black' };
+    var whitePawn1 = { piece: Pieces.PAWN, side: Pieces.sides.WHITE };
+    var blackPawn1 = { piece: Pieces.PAWN, side: Pieces.sides.BLACK };
+    var whitePawn2 = { piece: Pieces.PAWN, side: Pieces.sides.WHITE };
+    var blackPawn2 = { piece: Pieces.PAWN, side: Pieces.sides.BLACK };
 
     describe('on its side\'s second rank', function() {
       beforeEach(function() {
@@ -38,10 +38,10 @@ describe('Possible Moves', function() {
 
       describe('that is blocked by other pieces', function() {
         beforeEach(function(){
-          board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'c4');
-          board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'f1');
-          board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'd5');
-          board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'e8');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'c4');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f1');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'd5');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'e8');
         });
 
         it('cannot move through obstacles', function() {
@@ -72,24 +72,24 @@ describe('Possible Moves', function() {
     describe('that has an opportunity to capture', function() {
       beforeEach(function(){
         board.placePiece(blackPawn1, 'e5');
-        board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'd4');
-        board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'd5');
-        board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'd6');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd4');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd5');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd6');
 
         board.placePiece(whitePawn1, 'e4');
-        board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'f3');
-        board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'f4');
-        board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'f5');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f3');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f4');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f5');
 
         board.placePiece(whitePawn2, 'c2');
-        board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'd1');
-        board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'd2');
-        board.placePiece({ piece: Pieces.WHITE_PAWN, side: 'white' }, 'd3');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd1');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd2');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd3');
 
         board.placePiece(blackPawn2, 'c7');
-        board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'b6');
-        board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'b7');
-        board.placePiece({ piece: Pieces.BLACK_PAWN, side: 'black' }, 'b8');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'b6');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'b7');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'b8');
       });
 
       it('can move to capture enemy pieces', function() {

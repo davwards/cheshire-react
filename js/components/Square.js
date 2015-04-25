@@ -1,5 +1,6 @@
 var React = require('react');
 var CheshireActions = require('../actions/CheshireActions');
+var Pieces = require('../constants/Pieces');
 
 var Square = React.createClass({
   render: function() {
@@ -7,7 +8,7 @@ var Square = React.createClass({
 
     return (
       square.piece ?
-        (<td dangerouslySetInnerHTML={square.piece} className={this._classNames()} onClick={this._selectPiece}></td>) :
+        (<td dangerouslySetInnerHTML={Pieces.icons[square.side][square.piece]} className={this._classNames()} onClick={this._selectPiece}></td>) :
         (<td className={this._classNames()} onClick={this._selectPiece}></td>)
     );
   },

@@ -1,5 +1,7 @@
 var _ = require('lodash');
 
+var Pieces = require('../constants/Pieces');
+
 function incrementRank(rank, increment) {
   return String.fromCharCode(
     rank.charCodeAt() + increment
@@ -37,10 +39,10 @@ module.exports = function(board, position){
 
   var moves = [], direction, startingRank, opposingSide;
 
-  if(piece.side == 'black') {
-    direction = -1, startingRank = 'g', opposingSide = 'white';
+  if(piece.side == Pieces.sides.BLACK) {
+    direction = -1, startingRank = 'g', opposingSide = Pieces.sides.WHITE;
   } else {
-    direction = 1, startingRank = 'b', opposingSide = 'black';
+    direction = 1, startingRank = 'b', opposingSide = Pieces.sides.BLACK;
   }
 
   moves = board.filterSquares(function(square, candidatePosition) {

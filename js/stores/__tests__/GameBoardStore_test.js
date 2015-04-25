@@ -264,12 +264,12 @@ describe('GameBoardStore', function() {
         });
 
         expect(GameBoardStore.getBoardState()['b']['4'].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()['c']['4'].piece).toEqual(Pieces.WHITE_PAWN);
-        expect(GameBoardStore.getBoardState()['c']['4'].side).toEqual('white');
+        expect(GameBoardStore.getBoardState()['c']['4'].piece).toEqual(Pieces.PAWN);
+        expect(GameBoardStore.getBoardState()['c']['4'].side).toEqual(Pieces.sides.WHITE);
 
         expect(GameBoardStore.getBoardState()['g']['4'].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()['f']['4'].piece).toEqual(Pieces.BLACK_PAWN);
-        expect(GameBoardStore.getBoardState()['f']['4'].side).toEqual('black');
+        expect(GameBoardStore.getBoardState()['f']['4'].piece).toEqual(Pieces.PAWN);
+        expect(GameBoardStore.getBoardState()['f']['4'].side).toEqual(Pieces.sides.BLACK);
       });
     });
   });

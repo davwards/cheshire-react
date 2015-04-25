@@ -13,34 +13,34 @@ describe('Board model', function() {
     var board = new BoardModel();
 
     it('has all the pieces in starting position', function() {
-      expect(board.position('a1').piece).toEqual(Pieces.WHITE_ROOK);
-      expect(board.position('a2').piece).toEqual(Pieces.WHITE_KNIGHT);
-      expect(board.position('a3').piece).toEqual(Pieces.WHITE_BISHOP);
-      expect(board.position('a4').piece).toEqual(Pieces.WHITE_QUEEN);
-      expect(board.position('a5').piece).toEqual(Pieces.WHITE_KING);
-      expect(board.position('a6').piece).toEqual(Pieces.WHITE_BISHOP);
-      expect(board.position('a7').piece).toEqual(Pieces.WHITE_KNIGHT);
-      expect(board.position('a8').piece).toEqual(Pieces.WHITE_ROOK);
-      expect(_.all(board.rank('b'), function(square) { return square.piece == Pieces.WHITE_PAWN; })).toBeTruthy();
-      expect(_.all(board.rank('a'), function(square) { return square.side == 'white'; })).toBeTruthy();
-      expect(_.all(board.rank('b'), function(square) { return square.side == 'white'; })).toBeTruthy();
+      expect(board.position('a1').piece).toEqual(Pieces.ROOK);
+      expect(board.position('a2').piece).toEqual(Pieces.KNIGHT);
+      expect(board.position('a3').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('a4').piece).toEqual(Pieces.QUEEN);
+      expect(board.position('a5').piece).toEqual(Pieces.KING);
+      expect(board.position('a6').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('a7').piece).toEqual(Pieces.KNIGHT);
+      expect(board.position('a8').piece).toEqual(Pieces.ROOK);
+      expect(_.all(board.rank('b'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
+      expect(_.all(board.rank('a'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
+      expect(_.all(board.rank('b'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
 
       expect(_.all(board.rank('c'), function(square) { return square.piece == ''; })).toBeTruthy();
       expect(_.all(board.rank('d'), function(square) { return square.piece == ''; })).toBeTruthy();
       expect(_.all(board.rank('e'), function(square) { return square.piece == ''; })).toBeTruthy();
       expect(_.all(board.rank('f'), function(square) { return square.piece == ''; })).toBeTruthy();
 
-      expect(_.all(board.rank('g'), function(square) { return square.piece == Pieces.BLACK_PAWN; })).toBeTruthy();
-      expect(board.position('h1').piece).toEqual(Pieces.BLACK_ROOK);
-      expect(board.position('h2').piece).toEqual(Pieces.BLACK_KNIGHT);
-      expect(board.position('h3').piece).toEqual(Pieces.BLACK_BISHOP);
-      expect(board.position('h4').piece).toEqual(Pieces.BLACK_QUEEN);
-      expect(board.position('h5').piece).toEqual(Pieces.BLACK_KING);
-      expect(board.position('h6').piece).toEqual(Pieces.BLACK_BISHOP);
-      expect(board.position('h7').piece).toEqual(Pieces.BLACK_KNIGHT);
-      expect(board.position('h8').piece).toEqual(Pieces.BLACK_ROOK);
-      expect(_.all(board.rank('g'), function(square) { return square.side == 'black'; })).toBeTruthy();
-      expect(_.all(board.rank('h'), function(square) { return square.side == 'black'; })).toBeTruthy();
+      expect(_.all(board.rank('g'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
+      expect(board.position('h1').piece).toEqual(Pieces.ROOK);
+      expect(board.position('h2').piece).toEqual(Pieces.KNIGHT);
+      expect(board.position('h3').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('h4').piece).toEqual(Pieces.QUEEN);
+      expect(board.position('h5').piece).toEqual(Pieces.KING);
+      expect(board.position('h6').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('h7').piece).toEqual(Pieces.KNIGHT);
+      expect(board.position('h8').piece).toEqual(Pieces.ROOK);
+      expect(_.all(board.rank('g'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
+      expect(_.all(board.rank('h'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
     });
 
     it('has all the pieces marked as unmoved', function() {
@@ -166,7 +166,7 @@ describe('Board model', function() {
     beforeEach(function() { board = new BoardModel(); });
 
     it('puts the given piece at the given position', function() {
-      var piece = { piece: Pieces.BLACK_ROOK, side: 'black' }
+      var piece = { piece: Pieces.ROOK, side: Pieces.sides.BLACK }
 
       expect(board.position('e4')).not.toEqual(piece);
       board.placePiece(piece, 'e4');
@@ -181,9 +181,9 @@ describe('Board model', function() {
     it('returns a list of positions for which the given predicate is true', function(){
       expect(
         board.filterSquares(function(square) {
-          return square.piece == Pieces.WHITE_ROOK;
+          return square.piece == Pieces.ROOK;
         })
-      ).toEqual(['a1', 'a8']);
+      ).toEqual(['a1', 'a8', 'h1', 'h8']);
     });
 
     it('provides the position of the square to the predicate', function(){
@@ -204,7 +204,7 @@ describe('Board model', function() {
         board.clearBoard();
 
         expect(board.isOccupied('c4')).toBeFalsy();
-        board.placePiece({piece: Pieces.WHITE_KNIGHT, side: 'white'}, 'c4');
+        board.placePiece({piece: Pieces.KNIGHT, side: Pieces.sides.WHITE}, 'c4');
         expect(board.isOccupied('c4')).toBeTruthy();
       });
     });
