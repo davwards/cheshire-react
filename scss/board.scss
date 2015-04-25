@@ -4,6 +4,8 @@
   $dark-square: #ddd;
   $hovered-square: #acf;
   $selected-square: #afc;
+  $possible-move-light: #ffc;
+  $possible-move-dark: #eeb;
 
   font-size: 48px;
   border-collapse: collapse;
@@ -24,11 +26,19 @@
     &.selected-square {
       background: $selected-square;
     }
+
+    &.possible-move {
+      background: $possible-move-light;
+    }
   }
 
   tr:nth-child(even) td:nth-child(odd), tr:nth-child(odd) td:nth-child(even) {
     &:not(.selected-square) {
       background: $dark-square;
+
+      &.possible-move {
+        background: $possible-move-dark;
+      }
 
       &:hover {
         background: $hovered-square;

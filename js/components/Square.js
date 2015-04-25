@@ -22,6 +22,7 @@ var Square = React.createClass({
 
     if(square.piece) names.push('occupied-square');
     if(square.selected) names.push('selected-square');
+    if(square.possibleMove) names.push('possible-move');
 
     return names.join(' ');
   }

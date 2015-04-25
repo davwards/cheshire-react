@@ -1,9 +1,12 @@
 jest.dontMock('../GameBoardStore');
 jest.dontMock('../../models/Board');
 
+var _ = require('lodash');
+
 describe('GameBoardStore', function() {
   var handleAction;
   var AppDispatcher;
+  var PossibleMoves;
   var Actions;
   var Pieces;
   var GameBoardStore;
@@ -22,6 +25,7 @@ describe('GameBoardStore', function() {
         var selectedRank = 'a';
         var selectedFile = '1';
         beforeEach(function() {
+          PossibleMoves = require('../../services/PossibleMoves');
           expect(
             GameBoardStore.getBoardState()[selectedRank][selectedFile].piece
           ).toBeTruthy();
@@ -35,6 +39,22 @@ describe('GameBoardStore', function() {
           });
 
           expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].selected).toBeTruthy();
+        });
+
+        it('highlights the selected piece\'s possible moves', function() {
+          PossibleMoves.mockReturnValue(['g4', 'c3']);
+
+          expect(GameBoardStore.getBoardState()['g']['4'].possibleMove).toBeFalsy();
+          expect(GameBoardStore.getBoardState()['c']['3'].possibleMove).toBeFalsy();
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(GameBoardStore.getBoardState()['g']['4'].possibleMove).toBeTruthy();
+          expect(GameBoardStore.getBoardState()['c']['3'].possibleMove).toBeTruthy();
         });
       });
 
@@ -64,10 +84,13 @@ describe('GameBoardStore', function() {
       var sourceFile = '1';
       var movedPiece;
 
-      var selectedRank = 'g';
-      var selectedFile = '1';
+      var possibleMove1 = 'h8';
+      var possibleMove2 = 'a7';
 
       beforeEach(function(){
+        PossibleMoves = require('../../services/PossibleMoves');
+        PossibleMoves.mockReturnValue([possibleMove1, possibleMove2]);
+
         movedPiece = GameBoardStore.getBoardState()[sourceRank][sourceFile];
         expect(movedPiece.piece).toBeTruthy();
 
@@ -76,28 +99,110 @@ describe('GameBoardStore', function() {
           rank: sourceRank,
           file: sourceFile
         });
+
+        expect(movedPiece.selected).toBeTruthy();
       });
 
-      it('moves the previously selected piece to the new square, replacing the current occupant', function(){
-        handleAction({
-          actionType: Actions.SELECT_SQUARE,
-          rank: selectedRank,
-          file: selectedFile
+      describe('and the target square is a possible move', function() {
+        var selectedRank = possibleMove1[0];
+        var selectedFile = possibleMove1[1];
+        beforeEach(function() {
+          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].possibleMove).toBeTruthy();
         });
 
-        expect(GameBoardStore.getBoardState()[sourceRank][sourceFile].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()[selectedRank][selectedFile]).toEqual(movedPiece);
+        it('moves the previously selected piece to the new square, replacing the current occupant', function(){
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(GameBoardStore.getBoardState()[sourceRank][sourceFile].piece).toBeFalsy();
+          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile]).toEqual(movedPiece);
+        });
+
+        it('clears the selected status on the new and previous selections', function() {
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.selected; });
+          })).toBeTruthy();
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.selected; });
+          })).toBeFalsy();
+        });
+
+        it('clears any highlighted possible moves', function() {
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.possibleMove; });
+          })).toBeTruthy();
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.possibleMove; });
+          })).toBeFalsy();
+        });
       });
 
-      it('clears the selected status on the new and previous selections', function() {
-        handleAction({
-          actionType: Actions.SELECT_SQUARE,
-          rank: selectedRank,
-          file: selectedFile
+      describe('and the target square is not a possible move', function() {
+        var selectedRank = 'g';
+        var selectedFile = '1';
+        beforeEach(function() {
+          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].possibleMove).toBeFalsy();
         });
 
-        expect(GameBoardStore.getBoardState()[sourceRank][sourceFile].selected).toBeFalsy();
-        expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].selected).toBeFalsy();
+        it('does not move the previously selected piece to the new square, replacing the current occupant', function(){
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(GameBoardStore.getBoardState()[sourceRank][sourceFile]).toEqual(movedPiece);
+          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile]).not.toEqual(movedPiece);
+        });
+
+        it('clears the selected status on the new and previous selections', function() {
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.selected; });
+          })).toBeTruthy();
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.selected; });
+          })).toBeFalsy();
+        });
+
+        it('clears any highlighted possible moves', function() {
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.possibleMove; });
+          })).toBeTruthy();
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            rank: selectedRank,
+            file: selectedFile
+          });
+
+          expect(_.any(GameBoardStore.getBoardState(), function(rank) {
+            return _.any(rank, function(square) { return square.possibleMove; });
+          })).toBeFalsy();
+        });
       });
 
       describe('and the new selection is the same as the old selection', function() {
@@ -119,6 +224,18 @@ describe('GameBoardStore', function() {
     });
 
     describe('Scenario: a sequence of moves', function() {
+      beforeEach(function(){
+        PossibleMoves = require('../../services/PossibleMoves');
+        PossibleMoves.mockImplementation(function(board, position){
+          if(position == 'b4') {
+            return ['c4'];
+          }
+          if(position == 'g4') {
+            return ['f4'];
+          }
+        });
+      });
+
       it('results in having pieces at the right destination', function() {
         // Select white pawn
         handleAction({

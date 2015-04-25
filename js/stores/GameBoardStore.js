@@ -4,7 +4,10 @@ var assign = require('object-assign');
 var _ = require('lodash');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
+
 var BoardModel = require('../models/Board');
+var PossibleMoves = require('../services/PossibleMoves');
+
 var Pieces = require('../constants/Pieces');
 var Actions = require('../constants/Actions');
 var Events = require('../constants/Events');
@@ -15,13 +18,19 @@ var _selectedSquare;
 
 function setSelected(rank, file) {
   if(_selectedSquare) {
-    _board.move(_selectedSquare, rank+file);
+    if(_board.position(rank+file).possibleMove) {
+      _board.move(_selectedSquare, rank+file);
+    }
+
     _board.clearSelection();
     _selectedSquare = null;
   }
   else if(_board.position(rank+file).piece) {
     _board.select(rank+file);
     _selectedSquare = rank + file;
+    _.each(PossibleMoves(_board, rank+file), function(possibleMove){
+      _board.setPossibleMove(possibleMove);
+    });
   }
 }
 

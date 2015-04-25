@@ -25,13 +25,18 @@ Board.prototype.rank = function rank(rankName) {
 
 Board.prototype.select = function select(selectedPosition) {
   this.clearSelection();
-  this.ranks[selectedPosition[0]][selectedPosition[1]].selected = true
+  this.position(selectedPosition).selected = true
+};
+
+Board.prototype.setPossibleMove = function setPossibleMove(position) {
+  this.position(position).possibleMove = true;
 };
 
 Board.prototype.clearSelection = function clearSelection() {
   _.each(this.ranks, function(rank) {
     _.each(rank, function(square) {
       square.selected = false;
+      square.possibleMove = false;
     })
   });
 };

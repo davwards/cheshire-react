@@ -119,6 +119,31 @@ describe('Board model', function() {
     });
   });
 
+  describe('clearSelection', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    it('unmarks any selected and possible move squares', function() {
+      board.select('a4');
+      board.setPossibleMove('c1');
+      board.setPossibleMove('d8');
+
+      expect(_.any(board.ranks, function(rank) {
+        return _.any(rank, function(square) {
+          return square.selected || square.possibleMove;
+        });
+      })).toBeTruthy();
+
+      board.clearSelection();
+
+      expect(_.any(board.ranks, function(rank) {
+        return _.any(rank, function(square) {
+          return square.selected || square.possibleMove;
+        });
+      })).toBeFalsy();
+    });
+  });
+
   describe('clearBoard', function() {
     var board;
     beforeEach(function() { board = new BoardModel(); });
