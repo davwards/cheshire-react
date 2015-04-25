@@ -15,7 +15,7 @@ describe('Possible Moves', function() {
     board.clearBoard();
   });
 
-  describe('for a pawn', function() {
+  describe('A pawn', function() {
     var whitePawn1 = { piece: Pieces.PAWN, side: Pieces.sides.WHITE };
     var blackPawn1 = { piece: Pieces.PAWN, side: Pieces.sides.BLACK };
     var whitePawn2 = { piece: Pieces.PAWN, side: Pieces.sides.WHITE };
@@ -117,6 +117,35 @@ describe('Possible Moves', function() {
     });
   });
 
+  describe('A knight', function() {
+    var whiteKnight = { piece: Pieces.KNIGHT, side: Pieces.sides.WHITE };
+    var blackKnight = { piece: Pieces.KNIGHT, side: Pieces.sides.BLACK };
+
+    it('can move in an L-shape', function() {
+      board.placePiece(whiteKnight, 'c2');
+      board.placePiece(blackKnight, 'e6');
+
+      expect(PossibleMoves(board, 'c2').sort()).toEqual(['a1', 'a3', 'b4', 'd4', 'e1', 'e3']);
+      expect(PossibleMoves(board, 'e6').sort()).toEqual(['c5', 'c7', 'd4', 'd8', 'f4', 'f8', 'g5', 'g7']);
+    });
+
+    it('can capture opposing but not allied pieces', function() {
+      board.placePiece(whiteKnight, 'c2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'a1');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'b4');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'd4');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'e3');
+
+      board.placePiece(blackKnight, 'e6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'c5');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'c7');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'f8');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'g5');
+
+      expect(PossibleMoves(board, 'c2').sort()).toEqual(['a1', 'a3', 'b4', 'e1']);
+      expect(PossibleMoves(board, 'e6').sort()).toEqual(['c5', 'c7', 'd4', 'd8', 'f4', 'g7']);
+    });
+  });
 });
 
 function matchingSet(array1, array2) {
