@@ -25,7 +25,7 @@ function setSelected(rank, file) {
     _board.clearSelection();
     _selectedSquare = null;
   }
-  else if(_board.position(rank+file).piece) {
+  else if(_board.isOccupied(rank+file)) {
     _board.select(rank+file);
     _selectedSquare = rank + file;
     _.each(PossibleMoves(_board, rank+file), function(possibleMove){

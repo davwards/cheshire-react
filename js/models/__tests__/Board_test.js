@@ -173,4 +173,40 @@ describe('Board model', function() {
       expect(board.position('e4')).toEqual(piece);
     });
   });
+
+  describe('filterSquares', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    it('returns a list of positions for which the given predicate is true', function(){
+      expect(
+        board.filterSquares(function(square) {
+          return square.piece == Pieces.WHITE_ROOK;
+        })
+      ).toEqual(['a1', 'a8']);
+    });
+
+    it('provides the position of the square to the predicate', function(){
+      expect(
+        board.filterSquares(function(square, position) {
+          return position[0] == 'a' && parseInt(position[1]) < 4;
+        })
+      ).toEqual(['a1', 'a2', 'a3']);
+    });
+  });
+
+  describe('isOccupied', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    describe('for an occupied square', function() {
+      it('returns true', function() {
+        board.clearBoard();
+
+        expect(board.isOccupied('c4')).toBeFalsy();
+        board.placePiece({piece: Pieces.WHITE_KNIGHT, side: 'white'}, 'c4');
+        expect(board.isOccupied('c4')).toBeTruthy();
+      });
+    });
+  });
 });

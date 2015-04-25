@@ -55,6 +55,23 @@ Board.prototype.placePiece = function placePiece(piece, position) {
   this.ranks[position[0]][position[1]] = piece;
 };
 
+Board.prototype.isOccupied = function isOccupied(position) {
+  return this.position(position) && this.position(position).piece
+}
+
+Board.prototype.filterSquares = function filterSquares(predicate) {
+  return _.chain(this.ranks)
+    .map(function(rank, rankName) {
+      return _.map(rank, function(square, fileName) {
+        return {square: square, position: rankName + fileName};
+      })
+    })
+    .flatten()
+    .select(function(candidate) { return predicate(candidate.square, candidate.position); })
+    .map(function(square) { return square.position; })
+    .value();
+};
+
 function initialPosition() {
   return {
     'a' : {
