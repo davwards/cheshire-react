@@ -44,12 +44,11 @@ pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
 
 pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
   return function(candidateSquare, candidatePosition) {
-    var piece = board.position(position);
+    if(board.position(position).side == candidateSquare.side) return false;
+
     var rankDistance = Math.abs(distance(candidatePosition, position).rank);
     var fileDistance = Math.abs(distance(candidatePosition, position).file);
 
-    if(board.isOccupied(candidatePosition) && candidateSquare.side == piece.side)
-      return false;
     return (rankDistance == 2 && fileDistance == 1) || (rankDistance == 1 && fileDistance == 2);
   }
 };
@@ -61,7 +60,9 @@ pieceTypePredicates[Pieces.ROOK] = function(position, board) {
 };
 
 pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
-  return linePiecePredicate(position, board, isDiagonalPath, isDiagonallyBetween);
+  return linePiecePredicate(position, board,
+                            isDiagonalPath,
+                            isDiagonallyBetween);
 };
 
 function linePiecePredicate(position, board, isPath, isBetween) {
