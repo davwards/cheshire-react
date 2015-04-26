@@ -21,13 +21,7 @@ Board.prototype.move = function move(start, destination){
 
 Board.prototype.draftMove = function draftMove(start, destination){
   var possibleWorld = new Board();
-  possibleWorld.clearBoard();
-
-  _.each(this.ranks, function(rank, rankName) {
-    _.each(rank, function(square, fileName) {
-      possibleWorld.placePiece(_.clone(square), rankName+fileName);
-    })
-  });
+  possibleWorld.ranks = _.clone(this.ranks, true);
 
   possibleWorld.move(start, destination);
   return possibleWorld;
