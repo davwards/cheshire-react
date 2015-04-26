@@ -17,33 +17,27 @@ module.exports = function(board, position){
 };
 
 pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
-  var piece = board.position(position);
-  var rank = position[0];
-  var file = position[1];
-
+  var rank = position[0], file = position[1];
   var direction, startingFile, opposingSide;
 
-  if(piece.side == Pieces.sides.BLACK) {
+  if(board.position(position).side == Pieces.sides.BLACK)
     direction = -1, startingFile = '7', opposingSide = Pieces.sides.WHITE;
-  } else {
+  else
     direction = 1, startingFile = '2', opposingSide = Pieces.sides.BLACK;
-  }
+
+  var range = (file == startingFile ? 2 : 1);
 
   return function(candidateSquare, candidatePosition) {
     var rankDistance = Math.abs(distance(candidatePosition, position).rank);
     var fileDistance = distance(candidatePosition, position).file * direction;
 
-    if(fileDistance > 2 || fileDistance < 1 || rankDistance > 1)
-      return false;
-    if(rankDistance == 1 && fileDistance == 1 && candidateSquare.side == opposingSide)
-      return true;
-    if(blockedPath(position, candidatePosition, board))
-      return false;
-    if(fileDistance > 1 && file != startingFile)
-      return false;
-    if(rankDistance != 0)
-      return false
-    return true;
+    var captureOpportunity = (rankDistance == 1 && fileDistance == 1 &&
+                              candidateSquare.side == opposingSide);
+    var blocked = board.isOccupied(candidatePosition) ||
+                  board.isOccupied(rank + (parseInt(file)+direction));
+    var tooFar = rankDistance != 0 || fileDistance <= 0 || fileDistance > range;
+
+    return captureOpportunity || (!blocked && !tooFar)
   };
 }
 
@@ -156,32 +150,9 @@ function isDiagonallyBetween(position1, betweenPosition, position2) {
     .all().value();
 }
 
-function incrementRank(rank, increment) {
-  return String.fromCharCode(
-    rank.charCodeAt() + increment
-  );
-}
-
-function incrementFile(file, increment) {
-  return (parseInt(file) + increment) + ''
-}
-
 function distance(square1, square2) {
   return {
     rank: square1[0].charCodeAt() - square2[0].charCodeAt(),
     file: parseInt(square1[1]) - parseInt(square2[1])
   }
-};
-
-function blockedPath(startPosition, endPosition, board) {
-  if(startPosition[0] != endPosition[0]) return false;
-
-  return _.chain('12345678')
-    .select(function(fileName) {
-      return (fileName > startPosition[1] && fileName <= endPosition[1]) ||
-             (fileName < startPosition[1] && fileName >= endPosition[1]);
-    })
-    .map(function(fileName) { return startPosition[0] + fileName; })
-    .any(function(position) { return board.isOccupied(position); })
-    .value();
 };
