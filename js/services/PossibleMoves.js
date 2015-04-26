@@ -9,11 +9,7 @@ module.exports = function PossibleMoves(board, position){
   var predicateForPieceType = pieceTypePredicates[pieceType](position, board);
 
   var allAvailableMoves = board.filterSquares(predicateForPieceType);
-  return _.reject(allAvailableMoves, function(availableMove) {
-    var resultingBoard = board.draftMove(position, availableMove);
-    var kingsPosition = resultingBoard.findKing(board.position(position).side);
-    return _.any(detectThreats(kingsPosition, resultingBoard));
-  });
+  return _.reject(allAvailableMoves, movesIntoCheck(board, position));
 };
 
 pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
@@ -79,19 +75,6 @@ pieceTypePredicates[Pieces.KING] = function(position, board) {
   );
 };
 
-function detectThreats(positionToThreaten, board) {
-  if(!positionToThreaten) return [];
-  var squareToThreaten = board.position(positionToThreaten);
-
-  return board.filterSquares(function(potentialThreatSquare, potentialThreatPosition) {
-    if(!board.isOccupied(potentialThreatPosition)) return false;
-    if(board.position(positionToThreaten).side == potentialThreatSquare.side) return false;
-
-    var isThreatTo = pieceTypePredicates[potentialThreatSquare.piece](potentialThreatPosition, board);
-    return isThreatTo(squareToThreaten, positionToThreaten);
-  });
-};
-
 function linePiece(position, board, findPath) {
   return function(candidateSquare, candidatePosition) {
     var path;
@@ -134,6 +117,27 @@ function horizontalOrVerticalPath(position1, position2, board) {
     );
   });
 }
+
+function detectThreats(positionToThreaten, board) {
+  if(!positionToThreaten) return [];
+  var squareToThreaten = board.position(positionToThreaten);
+
+  return board.filterSquares(function(potentialThreatSquare, potentialThreatPosition) {
+    if(!board.isOccupied(potentialThreatPosition)) return false;
+    if(board.position(positionToThreaten).side == potentialThreatSquare.side) return false;
+
+    var isThreatTo = pieceTypePredicates[potentialThreatSquare.piece](potentialThreatPosition, board);
+    return isThreatTo(squareToThreaten, positionToThreaten);
+  });
+};
+
+function movesIntoCheck(board, position) {
+  return function(availableMove) {
+    var resultingBoard = board.draftMove(position, availableMove);
+    var kingsPosition = resultingBoard.findKing(board.position(position).side);
+    return _.any(detectThreats(kingsPosition, resultingBoard));
+  };
+};
 
 function between(a, b, c) {
   return (b > a && b < c) || (b < a && b > c);
