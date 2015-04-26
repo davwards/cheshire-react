@@ -109,15 +109,11 @@ function isDiagonallyBetween(position1, betweenPosition, position2) {
     !isDiagonalPath(position1, position2)
   ) return false;
 
-  if(!(
-    (betweenPosition[0] < position1[0] && betweenPosition[0] > position2[0]) ||
-    (betweenPosition[0] > position1[0] && betweenPosition[0] < position2[0])
-  )) return false;
-  if(!(
-    (betweenPosition[1] < position1[1] && betweenPosition[1] > position2[1]) ||
-    (betweenPosition[1] > position1[1] && betweenPosition[1] < position2[1])
-  )) return false;
-  return true;
+  return _.chain(_.zip(position1, betweenPosition, position2))
+    .map(function(coords) {
+      var a = coords[0], b = coords[1], c = coords[2];
+      return (b < a && b > c) || (b > a && b < c); })
+    .all().value();
 }
 
 function incrementRank(rank, increment) {
