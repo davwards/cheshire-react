@@ -204,23 +204,6 @@ describe('GameBoardStore', function() {
           })).toBeFalsy();
         });
       });
-
-      describe('and the new selection is the same as the old selection', function() {
-        var selectedRank = sourceRank;
-        var selectedFile = sourceFile;
-
-        it('does not delete the contents of the square', function() {
-          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].piece).toBeTruthy();
-
-          handleAction({
-            actionType: Actions.SELECT_SQUARE,
-            rank: selectedRank,
-            file: selectedFile
-          });
-
-          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].piece).toBeTruthy();
-        });
-      });
     });
 
     describe('Scenario: a sequence of moves', function() {
