@@ -4,7 +4,7 @@ var Pieces = require('../constants/Pieces');
 
 var pieceTypePredicates = {};
 
-module.exports = function(board, position){
+module.exports = function PossibleMoves(board, position){
   var pieceType = board.position(position).piece;
   var predicateForPieceType = pieceTypePredicates[pieceType](position, board);
 
