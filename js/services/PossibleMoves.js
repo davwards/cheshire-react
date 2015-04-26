@@ -53,37 +53,30 @@ pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
 };
 
 pieceTypePredicates[Pieces.ROOK] = function(position, board) {
-  return linePiecePredicate(position, board,
-                            isHorizontalOrVerticalPath,
-                            isHorizontallyOrVerticallyBetween);
+  return linePiece(position, board, horizontalOrVerticalPath);
 };
 
 pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
-  return linePiecePredicate(position, board,
-                            isDiagonalPath,
-                            isDiagonallyBetween);
+  return linePiece(position, board, diagonalPath);
 };
 
 pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
-  return linePiecePredicate(position, board,
+  return linePiece(position, board,
     function diagonalHorizontalOrVerticalPath(position1, position2) {
-      return isDiagonalPath(position1, position2) ||
-             isHorizontalOrVerticalPath(position1, position2);
-    },
-    function diagonallyHorizontallyOrVerticallyBetween(position1, position2, position3) {
-      return isDiagonallyBetween(position1, position2, position3) ||
-             isHorizontallyOrVerticallyBetween(position1, position2, position3);
+      return diagonalPath(position1, position2, board) ||
+             horizontalOrVerticalPath(position1, position2, board);
     }
   );
 };
 
 pieceTypePredicates[Pieces.KING] = function(position, board) {
-  return linePiecePredicate(position, board,
-    function oneStepInAnyDirection(candidatePosition, position) {
-      return(Math.abs(distance(candidatePosition, position).rank) <= 1 &&
-             Math.abs(distance(candidatePosition, position).file) <= 1);
-    },
-    function() { return false; });
+  return linePiece(position, board,
+    function oneStepInAnyDirection(position, candidatePosition, board) {
+      if(_.all(distance(candidatePosition, position), function(steps) {
+        return Math.abs(steps) <=1;
+      })) return [];
+    }
+  );
 };
 
 function detectThreats(positionToThreaten, board) {
@@ -99,56 +92,56 @@ function detectThreats(positionToThreaten, board) {
   });
 };
 
-function linePiecePredicate(position, board, isPath, isBetween) {
+function linePiece(position, board, findPath) {
   return function(candidateSquare, candidatePosition) {
     if(candidatePosition == position) return false;
     if(board.position(position).side == candidateSquare.side) return false;
-    if(!isPath(candidatePosition, position)) return false;
 
-    return !_.any(board.filterSquares(function(square, squarePosition){
-      return board.isOccupied(squarePosition) &&
-             isBetween(position, squarePosition, candidatePosition);
-    }));
+    var path = findPath(position, candidatePosition, board);
+    if(!path) return false;
+
+    return !_.any(path, function(passedThroughPosition) {
+      return board.isOccupied(passedThroughPosition);
+    });
   };
 };
 
-function isHorizontalOrVerticalPath(position1, position2) {
-  var rankDistance = Math.abs(distance(position1, position2).rank);
-  var fileDistance = Math.abs(distance(position1, position2).file);
+function diagonalPath(position1, position2, board) {
+  var rankDistance = distance(position1, position2).rank;
+  var fileDistance = distance(position1, position2).file;
 
-  return (rankDistance == 0) ^ (fileDistance == 0);
+  if(Math.abs(rankDistance) != Math.abs(fileDistance)) return false;
+
+  return board.filterSquares(function(square, position) {
+    rankDistance = distance(position1, position).rank;
+    fileDistance = distance(position1, position).file;
+
+    return (
+      Math.abs(rankDistance) == Math.abs(fileDistance) &&
+      between(position1[0], position[0], position2[0]) &&
+      between(position1[1], position[1], position2[1])
+    );
+  });
 }
 
-function isHorizontallyOrVerticallyBetween(position1, betweenPosition, position2) {
-  var a, b, c;
-  if(position1[0] == betweenPosition[0] && betweenPosition[0] == position2[0]){
-    a = position1[1], b = betweenPosition[1], c = position2[1];
-  } else if(position1[1] == betweenPosition[1] && betweenPosition[1] == position2[1]){
-    a = position1[0], b = betweenPosition[0], c = position2[0];
-  } else { return false; }
+function horizontalOrVerticalPath(position1, position2, board) {
+  if(!(position1[0] == position2[0] ^ position1[1] == position2[1])) return false;
 
-  return (b < a && b > c) || (b > a && b < c);
+  var commonCoordinate   = (position1[0] == position2[0] ? 0 : 1);
+  var uncommonCoordinate = (position1[0] == position2[0] ? 1 : 0);
+
+  return board.filterSquares(function(square, position) {
+    return (
+      position[commonCoordinate] == position1[commonCoordinate] &&
+      between(position1[uncommonCoordinate],
+              position[uncommonCoordinate],
+              position2[uncommonCoordinate])
+    );
+  });
 }
 
-function isDiagonalPath(position1, position2) {
-  var rankDistance = Math.abs(distance(position1, position2).rank);
-  var fileDistance = Math.abs(distance(position1, position2).file);
-
-  return rankDistance == fileDistance;
-}
-
-function isDiagonallyBetween(position1, betweenPosition, position2) {
-  if(
-    !isDiagonalPath(position1, betweenPosition) ||
-    !isDiagonalPath(position2, betweenPosition) ||
-    !isDiagonalPath(position1, position2)
-  ) return false;
-
-  return _.chain(_.zip(position1, betweenPosition, position2))
-    .map(function(coords) {
-      var a = coords[0], b = coords[1], c = coords[2];
-      return (b < a && b > c) || (b > a && b < c); })
-    .all().value();
+function between(a, b, c) {
+  return (b > a && b < c) || (b < a && b > c);
 }
 
 function distance(square1, square2) {
