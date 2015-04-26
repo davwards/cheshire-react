@@ -103,8 +103,12 @@ function isDiagonalPath(position1, position2) {
 }
 
 function isDiagonallyBetween(position1, betweenPosition, position2) {
-  if(!isDiagonalPath(position1, betweenPosition)) return false;
-  if(!isDiagonalPath(betweenPosition, position2)) return false;
+  if(
+    !isDiagonalPath(position1, betweenPosition) ||
+    !isDiagonalPath(position2, betweenPosition) ||
+    !isDiagonalPath(position1, position2)
+  ) return false;
+
   if(!(
     (betweenPosition[0] < position1[0] && betweenPosition[0] > position2[0]) ||
     (betweenPosition[0] > position1[0] && betweenPosition[0] < position2[0])
