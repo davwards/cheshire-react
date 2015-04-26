@@ -65,6 +65,18 @@ pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
                             isDiagonallyBetween);
 };
 
+pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
+  return linePiecePredicate(position, board,
+                            function(pos1, pos2) {
+                              return isDiagonalPath(pos1, pos2) ||
+                                     isHorizontalOrVerticalPath(pos1, pos2);
+                            },
+                            function(pos1, pos2, pos3) {
+                              return isDiagonallyBetween(pos1, pos2, pos3) ||
+                                     isHorizontallyOrVerticallyBetween(pos1, pos2, pos3);
+                            });
+};
+
 function linePiecePredicate(position, board, isPath, isBetween) {
   return function(candidateSquare, candidatePosition) {
     if(candidatePosition == position) return false;

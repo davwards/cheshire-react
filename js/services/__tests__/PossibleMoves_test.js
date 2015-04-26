@@ -223,6 +223,44 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'e6')).not.toContain('c8');
     });
   });
+
+  describe('A queen', function() {
+    var whiteQueen = { piece: Pieces.QUEEN, side: Pieces.sides.WHITE };
+    var blackQueen = { piece: Pieces.QUEEN, side: Pieces.sides.BLACK };
+
+    it('can move diagonally, horizontally, or vertically', function() {
+      board.placePiece(whiteQueen, 'c2');
+      board.placePiece(blackQueen, 'e6');
+
+      expect(PossibleMoves(board, 'c2').sort()).toEqual(['a2', 'b2', 'c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'd2', 'e2', 'f2', 'g2', 'h2', 'a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7'].sort());
+      expect(PossibleMoves(board, 'e6').sort()).toEqual(['a6', 'b6', 'c6', 'd6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e7', 'e8', 'f6', 'g6', 'h6', 'f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2'].sort());
+    });
+
+    it('can capture opposing but not allied pieces', function() {
+      board.placePiece(whiteQueen, 'c2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd3');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'c4');
+
+      expect(PossibleMoves(board, 'c2')).toContain('d3');
+      expect(PossibleMoves(board, 'c2')).not.toContain('c4');
+
+      board.placePiece(blackQueen, 'e6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'f7');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'e3');
+
+      expect(PossibleMoves(board, 'e6')).toContain('f7');
+      expect(PossibleMoves(board, 'e6')).not.toContain('e3');
+    });
+
+    it('cannot move past obstacles', function() {
+      board.placePiece(blackQueen, 'e6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'f7');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd6');
+
+      expect(PossibleMoves(board, 'e6')).not.toContain('g8');
+      expect(PossibleMoves(board, 'e6')).not.toContain('c6');
+    });
+  });
 });
 
 function matchingSet(array1, array2) {
