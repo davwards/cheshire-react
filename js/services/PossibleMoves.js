@@ -86,7 +86,7 @@ pieceTypePredicates[Pieces.KING] = function(position, board) {
 };
 
 function detectThreats(positionToThreaten, board) {
-  if(!positionToThreaten) return false;
+  if(!positionToThreaten) return [];
   var squareToThreaten = board.position(positionToThreaten);
 
   return board.filterSquares(function(potentialThreatSquare, potentialThreatPosition) {
