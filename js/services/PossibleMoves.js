@@ -8,7 +8,12 @@ module.exports = function(board, position){
   var pieceType = board.position(position).piece;
   var predicateForPieceType = pieceTypePredicates[pieceType](position, board);
 
-  return board.filterSquares(predicateForPieceType);
+  var allAvailableMoves = board.filterSquares(predicateForPieceType);
+  return _.reject(allAvailableMoves, function(availableMove) {
+    var resultingBoard = board.draftMove(position, availableMove);
+    var kingsPosition = resultingBoard.findKing(board.position(position).side);
+    return _.any(detectThreats(kingsPosition, resultingBoard));
+  });
 };
 
 pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
@@ -84,6 +89,19 @@ pieceTypePredicates[Pieces.KING] = function(position, board) {
                                      Math.abs(distance(candidatePosition, position).file) < 2);
                             },
                             function() { return false; });
+};
+
+function detectThreats(positionToThreaten, board) {
+  if(!positionToThreaten) return false;
+  var squareToThreaten = board.position(positionToThreaten);
+
+  return board.filterSquares(function(potentialThreatSquare, potentialThreatPosition) {
+    if(!board.isOccupied(potentialThreatPosition)) return false;
+    if(board.position(positionToThreaten).side == potentialThreatSquare.side) return false;
+
+    var potentialThreatCanMoveTo = pieceTypePredicates[potentialThreatSquare.piece](potentialThreatPosition, board);
+    return potentialThreatCanMoveTo(squareToThreaten, positionToThreaten);
+  });
 };
 
 function linePiecePredicate(position, board, isPath, isBetween) {

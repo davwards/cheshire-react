@@ -19,9 +19,23 @@ Board.prototype.move = function move(start, destination){
   this.ranks[destination[0]][destination[1]] = piece;
 };
 
+Board.prototype.draftMove = function draftMove(start, destination){
+  var possibleWorld = new Board();
+  possibleWorld.clearBoard();
+
+  _.each(this.ranks, function(rank, rankName) {
+    _.each(rank, function(square, fileName) {
+      possibleWorld.placePiece(_.clone(square), rankName+fileName);
+    })
+  });
+
+  possibleWorld.move(start, destination);
+  return possibleWorld;
+};
+
 Board.prototype.rank = function rank(rankName) {
   return this.ranks[rankName];
-}
+};
 
 Board.prototype.select = function select(selectedPosition) {
   this.clearSelection();
@@ -70,6 +84,12 @@ Board.prototype.filterSquares = function filterSquares(predicate) {
     .select(function(candidate) { return predicate(candidate.square, candidate.position); })
     .map(function(square) { return square.position; })
     .value();
+};
+
+Board.prototype.findKing = function findKing(side) {
+  return this.filterSquares(function(square) {
+    return square.piece == Pieces.KING && square.side == side;
+  })[0];
 };
 
 function initialPosition() {

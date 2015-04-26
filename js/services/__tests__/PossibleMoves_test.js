@@ -145,6 +145,14 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'c2').sort()).toEqual(['a1', 'a3', 'b4', 'e1']);
       expect(PossibleMoves(board, 'e6').sort()).toEqual(['c5', 'c7', 'd4', 'd8', 'f4', 'g7']);
     });
+
+    it('cannot make a move that would put its own king in check', function() {
+      board.placePiece(whiteKnight, 'd5');
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'f5');
+      board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'a5');
+
+      expect(PossibleMoves(board, 'd5')).toEqual([]);
+    });
   });
 
   describe('A rook', function() {
@@ -184,6 +192,14 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'c2')).toContain('c3');
       expect(PossibleMoves(board, 'c2')).not.toContain('c5');
     });
+
+    it('cannot make a move that would put its own king in check', function() {
+      board.placePiece(whiteRook, 'd5');
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'd7');
+      board.placePiece(blackRook, 'd3');
+
+      expect(PossibleMoves(board, 'd5')).toEqual(['d3', 'd4', 'd6']);
+    });
   });
 
   describe('A bishop', function() {
@@ -221,6 +237,14 @@ describe('Possible Moves', function() {
 
       expect(PossibleMoves(board, 'e6')).not.toContain('g8');
       expect(PossibleMoves(board, 'e6')).not.toContain('c8');
+    });
+
+    it('cannot make a move that would put its own king in check', function() {
+      board.placePiece(whiteBishop, 'd5');
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'f7');
+      board.placePiece(blackBishop, 'b3');
+
+      expect(PossibleMoves(board, 'd5')).toEqual(['b3', 'c4', 'e6']);
     });
   });
 
@@ -260,6 +284,14 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'e6')).not.toContain('g8');
       expect(PossibleMoves(board, 'e6')).not.toContain('c6');
     });
+
+    it('cannot make a move that would put its own king in check', function() {
+      board.placePiece(whiteQueen, 'd5');
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'f7');
+      board.placePiece(blackQueen, 'b3');
+
+      expect(PossibleMoves(board, 'd5')).toEqual(['b3', 'c4', 'e6']);
+    });
   });
 
   describe('A king', function() {
@@ -277,6 +309,14 @@ describe('Possible Moves', function() {
 
       expect(PossibleMoves(board, 'c2')).toContain('d3');
       expect(PossibleMoves(board, 'c2')).not.toContain('b2');
+    });
+
+    it('cannot make a move that leaves it in check', function() {
+      board.placePiece(whiteKing, 'd5');
+      board.placePiece({piece: Pieces.QUEEN, side: Pieces.sides.BLACK}, 'c4');
+      board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'a6');
+
+      expect(PossibleMoves(board, 'd5')).toEqual(['c4', 'e5']);
     });
   });
 });
