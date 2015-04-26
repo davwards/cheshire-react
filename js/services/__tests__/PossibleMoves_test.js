@@ -190,7 +190,7 @@ describe('Possible Moves', function() {
     var whiteBishop = { piece: Pieces.BISHOP, side: Pieces.sides.WHITE };
     var blackBishop = { piece: Pieces.BISHOP, side: Pieces.sides.BLACK };
 
-    it.only('can move diagonally', function() {
+    it('can move diagonally', function() {
       board.placePiece(whiteBishop, 'c2');
       board.placePiece(blackBishop, 'e6');
 

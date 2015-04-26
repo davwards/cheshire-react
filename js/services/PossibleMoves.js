@@ -98,9 +98,8 @@ pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
     if(!isDiagonalPath(candidatePosition, position)) return false;
 
     return !_.any(board.filterSquares(function(square, squarePosition){
-      if(!isDiagonalPath(squarePosition, position)) return false;
-      if(!isDiagonallyBetween(position, squarePosition, candidatePosition)) return false;
-      return board.isOccupied(squarePosition);
+      return board.isOccupied(squarePosition) &&
+             isDiagonallyBetween(position, squarePosition, candidatePosition);
     }));
   };
 };
@@ -113,6 +112,8 @@ function isDiagonalPath(position1, position2) {
 }
 
 function isDiagonallyBetween(position1, betweenPosition, position2) {
+  if(!isDiagonalPath(position1, betweenPosition)) return false;
+  if(!isDiagonalPath(betweenPosition, position2)) return false;
   if(!(
     (betweenPosition[0] < position1[0] && betweenPosition[0] > position2[0]) ||
     (betweenPosition[0] > position1[0] && betweenPosition[0] < position2[0])
