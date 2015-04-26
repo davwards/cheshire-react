@@ -185,6 +185,44 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'c2')).not.toContain('c5');
     });
   });
+
+  describe('A bishop', function() {
+    var whiteBishop = { piece: Pieces.BISHOP, side: Pieces.sides.WHITE };
+    var blackBishop = { piece: Pieces.BISHOP, side: Pieces.sides.BLACK };
+
+    it.only('can move diagonally', function() {
+      board.placePiece(whiteBishop, 'c2');
+      board.placePiece(blackBishop, 'e6');
+
+      expect(PossibleMoves(board, 'c2').sort()).toEqual(['a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7']);
+      expect(PossibleMoves(board, 'e6').sort()).toEqual(['f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2'].sort());
+    });
+
+    it('can capture opposing but not allied pieces', function() {
+      board.placePiece(whiteBishop, 'c2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd3');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'a4');
+
+      expect(PossibleMoves(board, 'c2')).toContain('d3');
+      expect(PossibleMoves(board, 'c2')).not.toContain('a4');
+
+      board.placePiece(blackBishop, 'e6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'f7');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'h3');
+
+      expect(PossibleMoves(board, 'e6')).toContain('f7');
+      expect(PossibleMoves(board, 'e6')).not.toContain('h3');
+    });
+
+    it('cannot move past obstacles', function() {
+      board.placePiece(blackBishop, 'e6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'f7');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd7');
+
+      expect(PossibleMoves(board, 'e6')).not.toContain('g8');
+      expect(PossibleMoves(board, 'e6')).not.toContain('c8');
+    });
+  });
 });
 
 function matchingSet(array1, array2) {

@@ -91,6 +91,39 @@ pieceTypePredicates[Pieces.ROOK] = function(position, board) {
   };
 };
 
+pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
+  return function(candidateSquare, candidatePosition) {
+    if(candidatePosition == position) return false;
+    if(board.position(position).side == candidateSquare.side) return false;
+    if(!isDiagonalPath(candidatePosition, position)) return false;
+
+    return !_.any(board.filterSquares(function(square, squarePosition){
+      if(!isDiagonalPath(squarePosition, position)) return false;
+      if(!isDiagonallyBetween(position, squarePosition, candidatePosition)) return false;
+      return board.isOccupied(squarePosition);
+    }));
+  };
+};
+
+function isDiagonalPath(position1, position2) {
+  var rankDistance = Math.abs(distance(position1, position2).rank);
+  var fileDistance = Math.abs(distance(position1, position2).file);
+
+  return rankDistance == fileDistance;
+}
+
+function isDiagonallyBetween(position1, betweenPosition, position2) {
+  if(!(
+    (betweenPosition[0] < position1[0] && betweenPosition[0] > position2[0]) ||
+    (betweenPosition[0] > position1[0] && betweenPosition[0] < position2[0])
+  )) return false;
+  if(!(
+    (betweenPosition[1] < position1[1] && betweenPosition[1] > position2[1]) ||
+    (betweenPosition[1] > position1[1] && betweenPosition[1] < position2[1])
+  )) return false;
+  return true;
+}
+
 function incrementRank(rank, increment) {
   return String.fromCharCode(
     rank.charCodeAt() + increment
