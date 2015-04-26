@@ -77,6 +77,15 @@ pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
                             });
 };
 
+pieceTypePredicates[Pieces.KING] = function(position, board) {
+  return linePiecePredicate(position, board,
+                            function(candidatePosition, position) {
+                              return(Math.abs(distance(candidatePosition, position).rank) < 2 &&
+                                     Math.abs(distance(candidatePosition, position).file) < 2);
+                            },
+                            function() { return false; });
+};
+
 function linePiecePredicate(position, board, isPath, isBetween) {
   return function(candidateSquare, candidatePosition) {
     if(candidatePosition == position) return false;

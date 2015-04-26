@@ -261,6 +261,24 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'e6')).not.toContain('c6');
     });
   });
+
+  describe('A king', function() {
+    var whiteKing = { piece: Pieces.KING, side: Pieces.sides.WHITE };
+
+    it('can move one step in any direction', function() {
+      board.placePiece(whiteKing, 'c2');
+      expect(PossibleMoves(board, 'c2').sort()).toEqual(['b1', 'b2', 'b3', 'c1', 'c3', 'd1', 'd2', 'd3'].sort());
+    });
+
+    it('can capture opposing but not allied pieces', function() {
+      board.placePiece(whiteKing, 'c2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd3');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'b2');
+
+      expect(PossibleMoves(board, 'c2')).toContain('d3');
+      expect(PossibleMoves(board, 'c2')).not.toContain('b2');
+    });
+  });
 });
 
 function matchingSet(array1, array2) {
