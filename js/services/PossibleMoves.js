@@ -35,7 +35,7 @@ pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
 
     return captureOpportunity || (!blocked && !tooFar)
   };
-}
+};
 
 pieceTypePredicates[Pieces.KNIGHT] = function knight(position, board) {
   return function(candidateSquare, candidatePosition) {
@@ -85,7 +85,7 @@ function linePiece(position, board, findPath) {
       !_.any(path, function(step) { return board.isOccupied(step); })
     );
   };
-};
+}
 
 function diagonalPath(position1, position2, board) {
   var distance = getDistance(position1, position2);
@@ -129,7 +129,7 @@ function detectThreats(positionToThreaten, board) {
     var isThreatTo = pieceTypePredicates[potentialThreatSquare.piece](potentialThreatPosition, board);
     return isThreatTo(squareToThreaten, positionToThreaten);
   });
-};
+}
 
 function movesIntoCheck(board, position) {
   return function(availableMove) {
@@ -137,7 +137,7 @@ function movesIntoCheck(board, position) {
     var kingsPosition = resultingBoard.findKing(board.position(position).side);
     return _.any(detectThreats(kingsPosition, resultingBoard));
   };
-};
+}
 
 function between(a, b, c) {
   return (b > a && b < c) || (b < a && b > c);
@@ -147,5 +147,5 @@ function getDistance(square1, square2) {
   return {
     rank: square1[0].charCodeAt() - square2[0].charCodeAt(),
     file: parseInt(square1[1]) - parseInt(square2[1])
-  }
-};
+  };
+}
