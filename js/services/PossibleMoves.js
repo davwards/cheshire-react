@@ -94,15 +94,13 @@ function detectThreats(positionToThreaten, board) {
 
 function linePiece(position, board, findPath) {
   return function(candidateSquare, candidatePosition) {
-    if(candidatePosition == position) return false;
-    if(board.position(position).side == candidateSquare.side) return false;
-
-    var path = findPath(position, candidatePosition, board);
-    if(!path) return false;
-
-    return !_.any(path, function(passedThroughPosition) {
-      return board.isOccupied(passedThroughPosition);
-    });
+    var path;
+    return(
+      candidatePosition != position &&
+      board.position(position).side != candidateSquare.side &&
+      (path = findPath(position, candidatePosition, board)) &&
+      !_.any(path, function(step) { return board.isOccupied(step); })
+    );
   };
 };
 
