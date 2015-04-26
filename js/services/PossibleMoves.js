@@ -28,8 +28,8 @@ pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
   var range = (file == startingFile ? 2 : 1);
 
   return function(candidateSquare, candidatePosition) {
-    var rankDistance = Math.abs(distance(candidatePosition, position).rank);
-    var fileDistance = distance(candidatePosition, position).file * direction;
+    var rankDistance = Math.abs(getDistance(candidatePosition, position).rank);
+    var fileDistance = getDistance(candidatePosition, position).file * direction;
 
     var captureOpportunity = (rankDistance == 1 && fileDistance == 1 &&
                               candidateSquare.side == opposingSide);
@@ -45,8 +45,8 @@ pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
   return function(candidateSquare, candidatePosition) {
     if(board.position(position).side == candidateSquare.side) return false;
 
-    var rankDistance = Math.abs(distance(candidatePosition, position).rank);
-    var fileDistance = Math.abs(distance(candidatePosition, position).file);
+    var rankDistance = Math.abs(getDistance(candidatePosition, position).rank);
+    var fileDistance = Math.abs(getDistance(candidatePosition, position).file);
 
     return (rankDistance == 2 && fileDistance == 1) || (rankDistance == 1 && fileDistance == 2);
   }
@@ -72,7 +72,7 @@ pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
 pieceTypePredicates[Pieces.KING] = function(position, board) {
   return linePiece(position, board,
     function oneStepInAnyDirection(position, candidatePosition, board) {
-      if(_.all(distance(candidatePosition, position), function(steps) {
+      if(_.all(getDistance(candidatePosition, position), function(steps) {
         return Math.abs(steps) <=1;
       })) return [];
     }
@@ -107,17 +107,14 @@ function linePiece(position, board, findPath) {
 };
 
 function diagonalPath(position1, position2, board) {
-  var rankDistance = distance(position1, position2).rank;
-  var fileDistance = distance(position1, position2).file;
-
-  if(Math.abs(rankDistance) != Math.abs(fileDistance)) return false;
+  var distance = getDistance(position1, position2);
+  if(Math.abs(distance.rank) != Math.abs(distance.file)) return false;
 
   return board.filterSquares(function(square, position) {
-    rankDistance = distance(position1, position).rank;
-    fileDistance = distance(position1, position).file;
+    distance = getDistance(position1, position);
 
     return (
-      Math.abs(rankDistance) == Math.abs(fileDistance) &&
+      Math.abs(distance.rank) == Math.abs(distance.file) &&
       between(position1[0], position[0], position2[0]) &&
       between(position1[1], position[1], position2[1])
     );
@@ -144,7 +141,7 @@ function between(a, b, c) {
   return (b > a && b < c) || (b < a && b > c);
 }
 
-function distance(square1, square2) {
+function getDistance(square1, square2) {
   return {
     rank: square1[0].charCodeAt() - square2[0].charCodeAt(),
     file: parseInt(square1[1]) - parseInt(square2[1])
