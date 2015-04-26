@@ -54,6 +54,43 @@ pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
   }
 };
 
+pieceTypePredicates[Pieces.ROOK] = function(position, board) {
+  return function(candidateSquare, candidatePosition) {
+    var piece = board.position(position);
+    var rankDistance = Math.abs(distance(candidatePosition, position).rank);
+    var fileDistance = Math.abs(distance(candidatePosition, position).file);
+
+    if(piece.side == candidateSquare.side) return false;
+    if(!(
+      (rankDistance == 0) ^ (fileDistance == 0)
+    )) return false;
+
+    var start, end, coordinates, buildFullCoordinates;
+
+    if(rankDistance == 0) {
+      start = position[1];
+      end = candidatePosition[1];
+      coordinates = '12345678';
+      buildFullCoordinates = function(fileName) { return position[0] + fileName; };
+    }
+
+    if(fileDistance == 0) {
+      start = position[0];
+      end = candidatePosition[0];
+      coordinates = 'abcdefgh';
+      buildFullCoordinates = function(rankName) { return rankName + position[1]; };
+    }
+
+    return !(_.chain(coordinates)
+      .select(function(line) {
+        return (line < start && line > end) ||
+               (line > start && line < end); })
+      .map(buildFullCoordinates)
+      .any(function(passedPosition) { return board.isOccupied(passedPosition); })
+      .value());
+  };
+};
+
 function incrementRank(rank, increment) {
   return String.fromCharCode(
     rank.charCodeAt() + increment

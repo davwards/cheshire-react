@@ -146,6 +146,45 @@ describe('Possible Moves', function() {
       expect(PossibleMoves(board, 'e6').sort()).toEqual(['c5', 'c7', 'd4', 'd8', 'f4', 'g7']);
     });
   });
+
+  describe('A rook', function() {
+    var whiteRook = { piece: Pieces.ROOK, side: Pieces.sides.WHITE };
+    var blackRook = { piece: Pieces.ROOK, side: Pieces.sides.BLACK };
+
+    it('can move along ranks or files', function() {
+      board.placePiece(whiteRook, 'c2');
+      board.placePiece(blackRook, 'e6');
+
+      expect(PossibleMoves(board, 'c2').sort()).toEqual(['a2', 'b2', 'c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'd2', 'e2', 'f2', 'g2', 'h2']);
+      expect(PossibleMoves(board, 'e6').sort()).toEqual(['a6', 'b6', 'c6', 'd6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e7', 'e8', 'f6', 'g6', 'h6']);
+    });
+
+    it('can capture opposing but not allied pieces', function() {
+      board.placePiece(whiteRook, 'c2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'a2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'c4');
+
+      expect(PossibleMoves(board, 'c2')).toContain('a2');
+      expect(PossibleMoves(board, 'c2')).not.toContain('c4');
+
+      board.placePiece(blackRook, 'e6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'a6');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'e3');
+
+      expect(PossibleMoves(board, 'e6')).toContain('a6');
+      expect(PossibleMoves(board, 'e6')).not.toContain('e3');
+    });
+
+    it('cannot move past obstacles', function() {
+      board.placePiece(whiteRook, 'c2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'b2');
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'c4');
+
+      expect(PossibleMoves(board, 'c2')).not.toContain('a2');
+      expect(PossibleMoves(board, 'c2')).toContain('c3');
+      expect(PossibleMoves(board, 'c2')).not.toContain('c5');
+    });
+  });
 });
 
 function matchingSet(array1, array2) {
