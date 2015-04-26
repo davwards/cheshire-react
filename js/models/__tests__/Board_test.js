@@ -12,37 +12,6 @@ describe('Board model', function() {
   describe('initial state', function() {
     var board = new BoardModel();
 
-    it('has all the pieces in starting position', function() {
-      expect(board.position('a1').piece).toEqual(Pieces.ROOK);
-      expect(board.position('b1').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('c1').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('d1').piece).toEqual(Pieces.QUEEN);
-      expect(board.position('e1').piece).toEqual(Pieces.KING);
-      expect(board.position('f1').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('g1').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('h1').piece).toEqual(Pieces.ROOK);
-      expect(_.all(board.file('2'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
-      expect(_.all(board.file('1'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
-      expect(_.all(board.file('2'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
-
-      expect(_.all(board.file('3'), function(square) { return square.piece == ''; })).toBeTruthy();
-      expect(_.all(board.file('4'), function(square) { return square.piece == ''; })).toBeTruthy();
-      expect(_.all(board.file('5'), function(square) { return square.piece == ''; })).toBeTruthy();
-      expect(_.all(board.file('6'), function(square) { return square.piece == ''; })).toBeTruthy();
-
-      expect(_.all(board.file('7'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
-      expect(board.position('a8').piece).toEqual(Pieces.ROOK);
-      expect(board.position('b8').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('c8').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('d8').piece).toEqual(Pieces.QUEEN);
-      expect(board.position('e8').piece).toEqual(Pieces.KING);
-      expect(board.position('f8').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('g8').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('h8').piece).toEqual(Pieces.ROOK);
-      expect(_.all(board.file('7'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
-      expect(_.all(board.file('8'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
-    });
-
     it('has all the pieces marked as unmoved', function() {
       expect(board.filterSquares(function(square) {
         return square.hasMoved;

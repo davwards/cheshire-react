@@ -27,10 +27,6 @@ Board.prototype.draftMove = function draftMove(start, destination){
   return possibleWorld;
 };
 
-Board.prototype.file = function rank(fileName) {
-  return this.positions[fileName];
-};
-
 Board.prototype.select = function select(selectedPosition) {
   this.clearSelection();
   this.position(selectedPosition).selected = true
