@@ -37,20 +37,16 @@ Board.prototype.setPossibleMove = function setPossibleMove(position) {
 };
 
 Board.prototype.clearSelection = function clearSelection() {
-  _.each(this.positions, function(file) {
-    _.each(file, function(square) {
-      square.selected = false;
-      square.possibleMove = false;
-    })
+  this.eachSquare(function(square) {
+    square.selected = false;
+    square.possibleMove = false;
   });
 };
 
 Board.prototype.clearBoard = function clearBoard() {
-  _.each(this.positions, function(file) {
-    _.each(file, function(square) {
-      _.each(Object.keys(square), function(key) {
-        square[key] = undefined;
-      });
+  this.eachSquare(function(square) {
+    _.each(Object.keys(square), function(key) {
+      square[key] = undefined;
     });
   });
 };
@@ -75,6 +71,14 @@ Board.prototype.filterSquares = function filterSquares(predicate) {
     .map(function(square) { return square.position; })
     .value();
 };
+
+Board.prototype.eachSquare = function eachSquare(predicate) {
+  _.each(this.positions, function(file) {
+    _.each(file, function(square) {
+      predicate(square);
+    });
+  });
+}
 
 Board.prototype.findKing = function findKing(side) {
   return this.filterSquares(function(square) {
