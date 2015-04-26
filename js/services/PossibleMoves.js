@@ -55,27 +55,24 @@ pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
 };
 
 pieceTypePredicates[Pieces.ROOK] = function(position, board) {
-  return function(candidateSquare, candidatePosition) {
-    if(candidatePosition == position) return false;
-    if(board.position(position).side == candidateSquare.side) return false;
-    if(!isHorizontalOrVerticalPath(candidatePosition, position)) return false;
-
-    return !_.any(board.filterSquares(function(square, squarePosition){
-      return board.isOccupied(squarePosition) &&
-             isHorizontallyOrVerticallyBetween(position, squarePosition, candidatePosition);
-    }));
-  };
+  return linePiecePredicate(position, board,
+                            isHorizontalOrVerticalPath,
+                            isHorizontallyOrVerticallyBetween);
 };
 
 pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
+  return linePiecePredicate(position, board, isDiagonalPath, isDiagonallyBetween);
+};
+
+function linePiecePredicate(position, board, isPath, isBetween) {
   return function(candidateSquare, candidatePosition) {
     if(candidatePosition == position) return false;
     if(board.position(position).side == candidateSquare.side) return false;
-    if(!isDiagonalPath(candidatePosition, position)) return false;
+    if(!isPath(candidatePosition, position)) return false;
 
     return !_.any(board.filterSquares(function(square, squarePosition){
       return board.isOccupied(squarePosition) &&
-             isDiagonallyBetween(position, squarePosition, candidatePosition);
+             isBetween(position, squarePosition, candidatePosition);
     }));
   };
 };
