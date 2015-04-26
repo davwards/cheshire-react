@@ -36,7 +36,7 @@ function setSelected(rank, file) {
 
 var GameBoardStore = assign({}, EventEmitter.prototype, {
   getBoardState: function() {
-    return _board.ranks;
+    return _board.positions;
   },
   emitChange: function() {
     this.emit(Events.CHANGE);

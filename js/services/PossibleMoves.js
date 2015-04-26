@@ -21,27 +21,27 @@ pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
   var rank = position[0];
   var file = position[1];
 
-  var direction, startingRank, opposingSide;
+  var direction, startingFile, opposingSide;
 
   if(piece.side == Pieces.sides.BLACK) {
-    direction = -1, startingRank = 'g', opposingSide = Pieces.sides.WHITE;
+    direction = -1, startingFile = '7', opposingSide = Pieces.sides.WHITE;
   } else {
-    direction = 1, startingRank = 'b', opposingSide = Pieces.sides.BLACK;
+    direction = 1, startingFile = '2', opposingSide = Pieces.sides.BLACK;
   }
 
   return function(candidateSquare, candidatePosition) {
-    var rankDistance = distance(candidatePosition, position).rank * direction;
-    var fileDistance = Math.abs(distance(candidatePosition, position).file);
+    var rankDistance = Math.abs(distance(candidatePosition, position).rank);
+    var fileDistance = distance(candidatePosition, position).file * direction;
 
-    if(rankDistance > 2 || rankDistance < 1 || fileDistance > 1)
+    if(fileDistance > 2 || fileDistance < 1 || rankDistance > 1)
       return false;
-    if(fileDistance == 1 && rankDistance == 1 && candidateSquare.side == opposingSide)
+    if(rankDistance == 1 && fileDistance == 1 && candidateSquare.side == opposingSide)
       return true;
     if(blockedPath(position, candidatePosition, board))
       return false;
-    if(rankDistance > 1 && rank != startingRank)
+    if(fileDistance > 1 && file != startingFile)
       return false;
-    if(fileDistance != 0)
+    if(rankDistance != 0)
       return false
     return true;
   };
@@ -174,14 +174,14 @@ function distance(square1, square2) {
 };
 
 function blockedPath(startPosition, endPosition, board) {
-  if(startPosition[1] != endPosition[1]) return [];
+  if(startPosition[0] != endPosition[0]) return false;
 
-  return _.chain('abcdefgh')
-    .select(function(rankName) {
-      return (rankName > startPosition[0] && rankName <= endPosition[0]) ||
-             (rankName < startPosition[0] && rankName >= endPosition[0]);
+  return _.chain('12345678')
+    .select(function(fileName) {
+      return (fileName > startPosition[1] && fileName <= endPosition[1]) ||
+             (fileName < startPosition[1] && fileName >= endPosition[1]);
     })
-    .map(function(rankName) { return rankName + startPosition[1]; })
+    .map(function(fileName) { return startPosition[0] + fileName; })
     .any(function(position) { return board.isOccupied(position); })
     .value();
 };

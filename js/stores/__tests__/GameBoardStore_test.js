@@ -27,7 +27,7 @@ describe('GameBoardStore', function() {
         beforeEach(function() {
           PossibleMoves = require('../../services/PossibleMoves');
           expect(
-            GameBoardStore.getBoardState()[selectedRank][selectedFile].piece
+            GameBoardStore.getBoardState()[selectedFile][selectedRank].piece
           ).toBeTruthy();
         });
 
@@ -38,14 +38,14 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].selected).toBeTruthy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].selected).toBeTruthy();
         });
 
         it('highlights the selected piece\'s possible moves', function() {
           PossibleMoves.mockReturnValue(['g4', 'c3']);
 
-          expect(GameBoardStore.getBoardState()['g']['4'].possibleMove).toBeFalsy();
-          expect(GameBoardStore.getBoardState()['c']['3'].possibleMove).toBeFalsy();
+          expect(GameBoardStore.getBoardState()['4']['g'].possibleMove).toBeFalsy();
+          expect(GameBoardStore.getBoardState()['3']['c'].possibleMove).toBeFalsy();
 
           handleAction({
             actionType: Actions.SELECT_SQUARE,
@@ -53,17 +53,17 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()['g']['4'].possibleMove).toBeTruthy();
-          expect(GameBoardStore.getBoardState()['c']['3'].possibleMove).toBeTruthy();
+          expect(GameBoardStore.getBoardState()['4']['g'].possibleMove).toBeTruthy();
+          expect(GameBoardStore.getBoardState()['3']['c'].possibleMove).toBeTruthy();
         });
       });
 
       describe('and the selected square is not occupied', function() {
         var selectedRank = 'c';
-        var selectedFile = '1';
+        var selectedFile = '4';
         beforeEach(function() {
           expect(
-            GameBoardStore.getBoardState()[selectedRank][selectedFile].piece
+            GameBoardStore.getBoardState()[selectedFile][selectedRank].piece
           ).toBeFalsy();
         });
 
@@ -74,24 +74,24 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].selected).toBeFalsy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].selected).toBeFalsy();
         });
       });
     });
 
     describe('and another square is already selected', function() {
-      var sourceRank = 'b';
-      var sourceFile = '1';
+      var sourceRank = 'a';
+      var sourceFile = '2';
       var movedPiece;
 
-      var possibleMove1 = 'h8';
-      var possibleMove2 = 'a7';
+      var possibleMove1 = 'a3';
+      var possibleMove2 = 'a4';
 
       beforeEach(function(){
         PossibleMoves = require('../../services/PossibleMoves');
         PossibleMoves.mockReturnValue([possibleMove1, possibleMove2]);
 
-        movedPiece = GameBoardStore.getBoardState()[sourceRank][sourceFile];
+        movedPiece = GameBoardStore.getBoardState()[sourceFile][sourceRank];
         expect(movedPiece.piece).toBeTruthy();
 
         handleAction({
@@ -107,7 +107,7 @@ describe('GameBoardStore', function() {
         var selectedRank = possibleMove1[0];
         var selectedFile = possibleMove1[1];
         beforeEach(function() {
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].possibleMove).toBeTruthy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].possibleMove).toBeTruthy();
         });
 
         it('moves the previously selected piece to the new square, replacing the current occupant', function(){
@@ -117,8 +117,8 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()[sourceRank][sourceFile].piece).toBeFalsy();
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile]).toEqual(movedPiece);
+          expect(GameBoardStore.getBoardState()[sourceFile][sourceRank].piece).toBeFalsy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank]).toEqual(movedPiece);
         });
 
         it('clears the selected status on the new and previous selections', function() {
@@ -158,7 +158,7 @@ describe('GameBoardStore', function() {
         var selectedRank = 'g';
         var selectedFile = '1';
         beforeEach(function() {
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].possibleMove).toBeFalsy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].possibleMove).toBeFalsy();
         });
 
         it('does not move the previously selected piece to the new square, replacing the current occupant', function(){
@@ -168,8 +168,8 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()[sourceRank][sourceFile]).toEqual(movedPiece);
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile]).not.toEqual(movedPiece);
+          expect(GameBoardStore.getBoardState()[sourceFile][sourceRank]).toEqual(movedPiece);
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank]).not.toEqual(movedPiece);
         });
 
         it('clears the selected status on the new and previous selections', function() {
@@ -210,7 +210,7 @@ describe('GameBoardStore', function() {
         var selectedFile = sourceFile;
 
         it('does not delete the contents of the square', function() {
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].piece).toBeTruthy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].piece).toBeTruthy();
 
           handleAction({
             actionType: Actions.SELECT_SQUARE,
@@ -218,7 +218,7 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()[selectedRank][selectedFile].piece).toBeTruthy();
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].piece).toBeTruthy();
         });
       });
     });
@@ -227,11 +227,11 @@ describe('GameBoardStore', function() {
       beforeEach(function(){
         PossibleMoves = require('../../services/PossibleMoves');
         PossibleMoves.mockImplementation(function(board, position){
-          if(position == 'b4') {
-            return ['c4'];
+          if(position == 'd2') {
+            return ['d3'];
           }
-          if(position == 'g4') {
-            return ['f4'];
+          if(position == 'd7') {
+            return ['d6'];
           }
         });
       });
@@ -240,36 +240,36 @@ describe('GameBoardStore', function() {
         // Select white pawn
         handleAction({
           actionType: Actions.SELECT_SQUARE,
-          rank: 'b',
-          file: '4'
+          rank: 'd',
+          file: '2'
         });
         // Move white pawn forward
         handleAction({
           actionType: Actions.SELECT_SQUARE,
-          rank: 'c',
-          file: '4'
+          rank: 'd',
+          file: '3'
         });
 
         // Select black pawn
         handleAction({
           actionType: Actions.SELECT_SQUARE,
-          rank: 'g',
-          file: '4'
+          rank: 'd',
+          file: '7'
         });
         // Move black pawn forward
         handleAction({
           actionType: Actions.SELECT_SQUARE,
-          rank: 'f',
-          file: '4'
+          rank: 'd',
+          file: '6'
         });
 
-        expect(GameBoardStore.getBoardState()['b']['4'].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()['c']['4'].piece).toEqual(Pieces.PAWN);
-        expect(GameBoardStore.getBoardState()['c']['4'].side).toEqual(Pieces.sides.WHITE);
+        expect(GameBoardStore.getBoardState()['2']['d'].piece).toBeFalsy();
+        expect(GameBoardStore.getBoardState()['3']['d'].piece).toEqual(Pieces.PAWN);
+        expect(GameBoardStore.getBoardState()['3']['d'].side).toEqual(Pieces.sides.WHITE);
 
-        expect(GameBoardStore.getBoardState()['g']['4'].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()['f']['4'].piece).toEqual(Pieces.PAWN);
-        expect(GameBoardStore.getBoardState()['f']['4'].side).toEqual(Pieces.sides.BLACK);
+        expect(GameBoardStore.getBoardState()['7']['d'].piece).toBeFalsy();
+        expect(GameBoardStore.getBoardState()['6']['d'].piece).toEqual(Pieces.PAWN);
+        expect(GameBoardStore.getBoardState()['6']['d'].side).toEqual(Pieces.sides.BLACK);
       });
     });
   });

@@ -14,49 +14,45 @@ describe('Board model', function() {
 
     it('has all the pieces in starting position', function() {
       expect(board.position('a1').piece).toEqual(Pieces.ROOK);
-      expect(board.position('a2').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('a3').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('a4').piece).toEqual(Pieces.QUEEN);
-      expect(board.position('a5').piece).toEqual(Pieces.KING);
-      expect(board.position('a6').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('a7').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('a8').piece).toEqual(Pieces.ROOK);
-      expect(_.all(board.rank('b'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
-      expect(_.all(board.rank('a'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
-      expect(_.all(board.rank('b'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
-
-      expect(_.all(board.rank('c'), function(square) { return square.piece == ''; })).toBeTruthy();
-      expect(_.all(board.rank('d'), function(square) { return square.piece == ''; })).toBeTruthy();
-      expect(_.all(board.rank('e'), function(square) { return square.piece == ''; })).toBeTruthy();
-      expect(_.all(board.rank('f'), function(square) { return square.piece == ''; })).toBeTruthy();
-
-      expect(_.all(board.rank('g'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
+      expect(board.position('b1').piece).toEqual(Pieces.KNIGHT);
+      expect(board.position('c1').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('d1').piece).toEqual(Pieces.QUEEN);
+      expect(board.position('e1').piece).toEqual(Pieces.KING);
+      expect(board.position('f1').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('g1').piece).toEqual(Pieces.KNIGHT);
       expect(board.position('h1').piece).toEqual(Pieces.ROOK);
-      expect(board.position('h2').piece).toEqual(Pieces.KNIGHT);
-      expect(board.position('h3').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('h4').piece).toEqual(Pieces.QUEEN);
-      expect(board.position('h5').piece).toEqual(Pieces.KING);
-      expect(board.position('h6').piece).toEqual(Pieces.BISHOP);
-      expect(board.position('h7').piece).toEqual(Pieces.KNIGHT);
+      expect(_.all(board.file('2'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
+      expect(_.all(board.file('1'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
+      expect(_.all(board.file('2'), function(square) { return square.side == Pieces.sides.WHITE; })).toBeTruthy();
+
+      expect(_.all(board.file('3'), function(square) { return square.piece == ''; })).toBeTruthy();
+      expect(_.all(board.file('4'), function(square) { return square.piece == ''; })).toBeTruthy();
+      expect(_.all(board.file('5'), function(square) { return square.piece == ''; })).toBeTruthy();
+      expect(_.all(board.file('6'), function(square) { return square.piece == ''; })).toBeTruthy();
+
+      expect(_.all(board.file('7'), function(square) { return square.piece == Pieces.PAWN; })).toBeTruthy();
+      expect(board.position('a8').piece).toEqual(Pieces.ROOK);
+      expect(board.position('b8').piece).toEqual(Pieces.KNIGHT);
+      expect(board.position('c8').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('d8').piece).toEqual(Pieces.QUEEN);
+      expect(board.position('e8').piece).toEqual(Pieces.KING);
+      expect(board.position('f8').piece).toEqual(Pieces.BISHOP);
+      expect(board.position('g8').piece).toEqual(Pieces.KNIGHT);
       expect(board.position('h8').piece).toEqual(Pieces.ROOK);
-      expect(_.all(board.rank('g'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
-      expect(_.all(board.rank('h'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
+      expect(_.all(board.file('7'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
+      expect(_.all(board.file('8'), function(square) { return square.side == Pieces.sides.BLACK; })).toBeTruthy();
     });
 
     it('has all the pieces marked as unmoved', function() {
-      expect(_.all(board.ranks, function(rank){
-        return _.all(rank, function(square) {
-          return !square.hasMoved
-        });
-      })).toBeTruthy();
+      expect(board.filterSquares(function(square) {
+        return square.hasMoved;
+      })).toEqual([]);
     });
 
     it('has all the positions marked as unselected', function() {
-      expect(_.all(board.ranks, function(rank){
-        return _.all(rank, function(square) {
-          return !square.selected
-        });
-      })).toBeTruthy();
+      expect(board.filterSquares(function(square) {
+        return square.selected;
+      })).toEqual([]);
     });
   });
 
@@ -128,19 +124,15 @@ describe('Board model', function() {
       board.setPossibleMove('c1');
       board.setPossibleMove('d8');
 
-      expect(_.any(board.ranks, function(rank) {
-        return _.any(rank, function(square) {
-          return square.selected || square.possibleMove;
-        });
-      })).toBeTruthy();
+      expect(board.filterSquares(function(square) {
+        return square.selected || square.possibleMove;
+      })).not.toEqual([]);
 
       board.clearSelection();
 
-      expect(_.any(board.ranks, function(rank) {
-        return _.any(rank, function(square) {
-          return square.selected || square.possibleMove;
-        });
-      })).toBeFalsy();
+      expect(board.filterSquares(function(square) {
+        return square.selected || square.possibleMove;
+      })).toEqual([]);
     });
   });
 
@@ -149,15 +141,15 @@ describe('Board model', function() {
     beforeEach(function() { board = new BoardModel(); });
 
     it('removes all pieces from the board', function() {
-      expect(_.any(board.ranks, function(rank) {
-        return _.any(rank, function(square) { return square.piece; });
-      })).toBeTruthy();
+      expect(board.filterSquares(function(square, position) {
+        return board.isOccupied(position);
+      })).not.toEqual([]);
 
       board.clearBoard();
 
-      expect(_.any(board.ranks, function(rank) {
-        return _.any(rank, function(square) { return square.piece; });
-      })).toBeFalsy();
+      expect(board.filterSquares(function(square, position) {
+        return board.isOccupied(position);
+      })).toEqual([]);
     });
   });
 
@@ -182,7 +174,7 @@ describe('Board model', function() {
       expect(
         board.filterSquares(function(square) {
           return square.piece == Pieces.ROOK;
-        })
+        }).sort()
       ).toEqual(['a1', 'a8', 'h1', 'h8']);
     });
 

@@ -21,51 +21,51 @@ describe('Possible Moves', function() {
     var whitePawn2 = { piece: Pieces.PAWN, side: Pieces.sides.WHITE };
     var blackPawn2 = { piece: Pieces.PAWN, side: Pieces.sides.BLACK };
 
-    describe('on its side\'s second rank', function() {
+    describe('on its side\'s second file', function() {
       beforeEach(function() {
-        board.placePiece(whitePawn1, 'b4');
-        board.placePiece(blackPawn1, 'g1');
-        board.placePiece(whitePawn2, 'b5');
-        board.placePiece(blackPawn2, 'g8');
+        board.placePiece(whitePawn1, 'b2');
+        board.placePiece(blackPawn1, 'g7');
+        board.placePiece(whitePawn2, 'd2');
+        board.placePiece(blackPawn2, 'e7');
       });
 
       it('can move one or two spaces toward the opponent\'s side', function() {
-        expect(matchingSet(PossibleMoves(board, 'b4'), ['c4', 'd4'])).toBeTruthy();
-        expect(matchingSet(PossibleMoves(board, 'g1'), ['f1', 'e1'])).toBeTruthy();
-        expect(matchingSet(PossibleMoves(board, 'b5'), ['c5', 'd5'])).toBeTruthy();
-        expect(matchingSet(PossibleMoves(board, 'g8'), ['f8', 'e8'])).toBeTruthy();
+        expect(PossibleMoves(board, 'b2').sort()).toEqual(['b3', 'b4']);
+        expect(PossibleMoves(board, 'g7').sort()).toEqual(['g5', 'g6']);
+        expect(PossibleMoves(board, 'd2').sort()).toEqual(['d3', 'd4']);
+        expect(PossibleMoves(board, 'e7').sort()).toEqual(['e5', 'e6']);
       });
 
       describe('that is blocked by other pieces', function() {
         beforeEach(function(){
-          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'c4');
-          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f1');
-          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'd5');
-          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'e8');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'b3');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'g6');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'd4');
+          board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'e5');
         });
 
         it('cannot move through obstacles', function() {
-          expect(PossibleMoves(board, 'b4')).toEqual([]);
-          expect(PossibleMoves(board, 'g1')).toEqual([]);
-          expect(PossibleMoves(board, 'b5')).toEqual(['c5']);
-          expect(PossibleMoves(board, 'g8')).toEqual(['f8']);
+          expect(PossibleMoves(board, 'b2')).toEqual([]);
+          expect(PossibleMoves(board, 'g7')).toEqual([]);
+          expect(PossibleMoves(board, 'd2')).toEqual(['d3']);
+          expect(PossibleMoves(board, 'e7')).toEqual(['e6']);
         });
       });
     });
 
-    describe('not on its side\'s second rank', function() {
+    describe('not on its side\'s second file', function() {
       beforeEach(function() {
-        board.placePiece(whitePawn1, 'e4');
-        board.placePiece(blackPawn1, 'e5');
-        board.placePiece(whitePawn2, 'c1');
-        board.placePiece(blackPawn2, 'c8');
+        board.placePiece(whitePawn1, 'b3');
+        board.placePiece(blackPawn1, 'g6');
+        board.placePiece(whitePawn2, 'd3');
+        board.placePiece(blackPawn2, 'e6');
       });
 
       it('can move one space toward the opponent\'s side', function() {
-        expect(PossibleMoves(board, 'e4')).toEqual(['f4']);
-        expect(PossibleMoves(board, 'e5')).toEqual(['d5']);
-        expect(PossibleMoves(board, 'c1')).toEqual(['d1']);
-        expect(PossibleMoves(board, 'c8')).toEqual(['b8']);
+        expect(PossibleMoves(board, 'b3')).toEqual(['b4']);
+        expect(PossibleMoves(board, 'g6')).toEqual(['g5']);
+        expect(PossibleMoves(board, 'd3')).toEqual(['d4']);
+        expect(PossibleMoves(board, 'e6')).toEqual(['e5']);
       });
     });
 
@@ -73,46 +73,12 @@ describe('Possible Moves', function() {
       beforeEach(function(){
         board.placePiece(blackPawn1, 'e5');
         board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd4');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd5');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd6');
-
-        board.placePiece(whitePawn1, 'e4');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f3');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f4');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'f5');
-
-        board.placePiece(whitePawn2, 'c2');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd1');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd2');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'd3');
-
-        board.placePiece(blackPawn2, 'c7');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'b6');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'b7');
-        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, 'b8');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'e4');
+        board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, 'f4');
       });
 
       it('can move to capture enemy pieces', function() {
-        expect(PossibleMoves(board, 'e5')).toEqual(['d4', 'd6']);
-        expect(PossibleMoves(board, 'e4')).toEqual(['f3', 'f5']);
-        expect(PossibleMoves(board, 'c2')).toEqual([]);
-        expect(PossibleMoves(board, 'c7')).toEqual([]);
-      });
-    });
-
-    describe('on the edge of the board', function() {
-      beforeEach(function(){
-        board.placePiece(blackPawn1, 'h1');
-        board.placePiece(whitePawn1, 'h8');
-        board.placePiece(whitePawn2, 'a1');
-        board.placePiece(blackPawn2, 'a8');
-      });
-
-      it('cannot move off the board', function() {
-        expect(PossibleMoves(board, 'h1')).toEqual(['g1']);
-        expect(PossibleMoves(board, 'h8')).toEqual([]);
-        expect(PossibleMoves(board, 'a1')).toEqual(['b1']);
-        expect(PossibleMoves(board, 'a8')).toEqual([]);
+        expect(PossibleMoves(board, 'e5')).toEqual(['d4', 'f4']);
       });
     });
   });
