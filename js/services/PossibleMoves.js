@@ -56,38 +56,14 @@ pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
 
 pieceTypePredicates[Pieces.ROOK] = function(position, board) {
   return function(candidateSquare, candidatePosition) {
-    var piece = board.position(position);
-    var rankDistance = Math.abs(distance(candidatePosition, position).rank);
-    var fileDistance = Math.abs(distance(candidatePosition, position).file);
+    if(candidatePosition == position) return false;
+    if(board.position(position).side == candidateSquare.side) return false;
+    if(!isHorizontalOrVerticalPath(candidatePosition, position)) return false;
 
-    if(piece.side == candidateSquare.side) return false;
-    if(!(
-      (rankDistance == 0) ^ (fileDistance == 0)
-    )) return false;
-
-    var start, end, coordinates, buildFullCoordinates;
-
-    if(rankDistance == 0) {
-      start = position[1];
-      end = candidatePosition[1];
-      coordinates = '12345678';
-      buildFullCoordinates = function(fileName) { return position[0] + fileName; };
-    }
-
-    if(fileDistance == 0) {
-      start = position[0];
-      end = candidatePosition[0];
-      coordinates = 'abcdefgh';
-      buildFullCoordinates = function(rankName) { return rankName + position[1]; };
-    }
-
-    return !(_.chain(coordinates)
-      .select(function(line) {
-        return (line < start && line > end) ||
-               (line > start && line < end); })
-      .map(buildFullCoordinates)
-      .any(function(passedPosition) { return board.isOccupied(passedPosition); })
-      .value());
+    return !_.any(board.filterSquares(function(square, squarePosition){
+      return board.isOccupied(squarePosition) &&
+             isHorizontallyOrVerticallyBetween(position, squarePosition, candidatePosition);
+    }));
   };
 };
 
@@ -103,6 +79,24 @@ pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
     }));
   };
 };
+
+function isHorizontalOrVerticalPath(position1, position2) {
+  var rankDistance = Math.abs(distance(position1, position2).rank);
+  var fileDistance = Math.abs(distance(position1, position2).file);
+
+  return (rankDistance == 0) ^ (fileDistance == 0);
+}
+
+function isHorizontallyOrVerticallyBetween(position1, betweenPosition, position2) {
+  var a, b, c;
+  if(position1[0] == betweenPosition[0] && betweenPosition[0] == position2[0]){
+    a = position1[1], b = betweenPosition[1], c = position2[1];
+  } else if(position1[1] == betweenPosition[1] && betweenPosition[1] == position2[1]){
+    a = position1[0], b = betweenPosition[0], c = position2[0];
+  } else { return false; }
+
+  return (b < a && b > c) || (b > a && b < c);
+}
 
 function isDiagonalPath(position1, position2) {
   var rankDistance = Math.abs(distance(position1, position2).rank);
