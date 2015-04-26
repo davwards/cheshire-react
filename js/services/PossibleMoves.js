@@ -66,23 +66,24 @@ pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
 
 pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
   return linePiecePredicate(position, board,
-                            function(pos1, pos2) {
-                              return isDiagonalPath(pos1, pos2) ||
-                                     isHorizontalOrVerticalPath(pos1, pos2);
-                            },
-                            function(pos1, pos2, pos3) {
-                              return isDiagonallyBetween(pos1, pos2, pos3) ||
-                                     isHorizontallyOrVerticallyBetween(pos1, pos2, pos3);
-                            });
+    function diagonalHorizontalOrVerticalPath(position1, position2) {
+      return isDiagonalPath(position1, position2) ||
+             isHorizontalOrVerticalPath(position1, position2);
+    },
+    function diagonallyHorizontallyOrVerticallyBetween(position1, position2, position3) {
+      return isDiagonallyBetween(position1, position2, position3) ||
+             isHorizontallyOrVerticallyBetween(position1, position2, position3);
+    }
+  );
 };
 
 pieceTypePredicates[Pieces.KING] = function(position, board) {
   return linePiecePredicate(position, board,
-                            function(candidatePosition, position) {
-                              return(Math.abs(distance(candidatePosition, position).rank) < 2 &&
-                                     Math.abs(distance(candidatePosition, position).file) < 2);
-                            },
-                            function() { return false; });
+    function oneStepInAnyDirection(candidatePosition, position) {
+      return(Math.abs(distance(candidatePosition, position).rank) <= 1 &&
+             Math.abs(distance(candidatePosition, position).file) <= 1);
+    },
+    function() { return false; });
 };
 
 function detectThreats(positionToThreaten, board) {
@@ -93,8 +94,8 @@ function detectThreats(positionToThreaten, board) {
     if(!board.isOccupied(potentialThreatPosition)) return false;
     if(board.position(positionToThreaten).side == potentialThreatSquare.side) return false;
 
-    var potentialThreatCanMoveTo = pieceTypePredicates[potentialThreatSquare.piece](potentialThreatPosition, board);
-    return potentialThreatCanMoveTo(squareToThreaten, positionToThreaten);
+    var isThreatTo = pieceTypePredicates[potentialThreatSquare.piece](potentialThreatPosition, board);
+    return isThreatTo(squareToThreaten, positionToThreaten);
   });
 };
 
