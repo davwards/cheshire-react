@@ -37,7 +37,7 @@ pieceTypePredicates[Pieces.PAWN] = function pawn(position, board) {
   };
 }
 
-pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
+pieceTypePredicates[Pieces.KNIGHT] = function knight(position, board) {
   return function(candidateSquare, candidatePosition) {
     if(board.position(position).side == candidateSquare.side) return false;
 
@@ -48,15 +48,15 @@ pieceTypePredicates[Pieces.KNIGHT] = function(position, board) {
   }
 };
 
-pieceTypePredicates[Pieces.ROOK] = function(position, board) {
+pieceTypePredicates[Pieces.ROOK] = function rook(position, board) {
   return linePiece(position, board, horizontalOrVerticalPath);
 };
 
-pieceTypePredicates[Pieces.BISHOP] = function(position, board) {
+pieceTypePredicates[Pieces.BISHOP] = function bishop(position, board) {
   return linePiece(position, board, diagonalPath);
 };
 
-pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
+pieceTypePredicates[Pieces.QUEEN] = function queen(position, board) {
   return linePiece(position, board,
     function diagonalHorizontalOrVerticalPath(position1, position2) {
       return diagonalPath(position1, position2, board) ||
@@ -65,7 +65,7 @@ pieceTypePredicates[Pieces.QUEEN] = function(position, board) {
   );
 };
 
-pieceTypePredicates[Pieces.KING] = function(position, board) {
+pieceTypePredicates[Pieces.KING] = function king(position, board) {
   return linePiece(position, board,
     function oneStepInAnyDirection(position, candidatePosition, board) {
       if(_.all(getDistance(candidatePosition, position), function(steps) {
