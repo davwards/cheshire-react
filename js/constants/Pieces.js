@@ -16,13 +16,15 @@ Pieces.sides = keymirror({
 
 Pieces.icons = {};
 Pieces.icons[Pieces.sides.WHITE] = {};
+Pieces.icons[Pieces.sides.BLACK] = {};
+
 Pieces.icons[Pieces.sides.WHITE][Pieces.PAWN] = {__html: '&#9817;'};
 Pieces.icons[Pieces.sides.WHITE][Pieces.ROOK] = {__html: '&#9814;'};
 Pieces.icons[Pieces.sides.WHITE][Pieces.KNIGHT] = {__html: '&#9816;'};
 Pieces.icons[Pieces.sides.WHITE][Pieces.BISHOP] = {__html: '&#9815;'};
 Pieces.icons[Pieces.sides.WHITE][Pieces.QUEEN] = {__html: '&#9813;'};
 Pieces.icons[Pieces.sides.WHITE][Pieces.KING] = {__html: '&#9812;'};
-Pieces.icons[Pieces.sides.BLACK] = {};
+
 Pieces.icons[Pieces.sides.BLACK][Pieces.PAWN] = {__html: '&#9823;'};
 Pieces.icons[Pieces.sides.BLACK][Pieces.ROOK] = {__html: '&#9820;'};
 Pieces.icons[Pieces.sides.BLACK][Pieces.KNIGHT] = {__html: '&#9822;'};
