@@ -49,18 +49,18 @@ pieceTypePredicates[Pieces.KNIGHT] = function knight(position, board) {
 };
 
 pieceTypePredicates[Pieces.ROOK] = function rook(position, board) {
-  return linePiece(position, board, horizontalOrVerticalPath);
+  return linePiece(position, board, clearHorizontalOrVerticalPath);
 };
 
 pieceTypePredicates[Pieces.BISHOP] = function bishop(position, board) {
-  return linePiece(position, board, diagonalPath);
+  return linePiece(position, board, clearDiagonalPath);
 };
 
 pieceTypePredicates[Pieces.QUEEN] = function queen(position, board) {
   return linePiece(position, board,
-    function diagonalHorizontalOrVerticalPath(position1, position2) {
-      return diagonalPath(position1, position2, board) ||
-             horizontalOrVerticalPath(position1, position2, board);
+    function clearDiagonalHorizontalOrVerticalPath(position1, position2) {
+      return clearDiagonalPath(position1, position2, board) ||
+             clearHorizontalOrVerticalPath(position1, position2, board);
     }
   );
 };
@@ -68,54 +68,57 @@ pieceTypePredicates[Pieces.QUEEN] = function queen(position, board) {
 pieceTypePredicates[Pieces.KING] = function king(position, board) {
   return linePiece(position, board,
     function oneStepInAnyDirection(position, candidatePosition, board) {
-      if(_.all(getDistance(candidatePosition, position), function(steps) {
+      return (_.all(getDistance(candidatePosition, position), function(steps) {
         return Math.abs(steps) <=1;
-      })) return [];
+      }));
     }
   );
 };
 
-function linePiece(position, board, findPath) {
+function linePiece(position, board, findClearPath) {
   return function(candidateSquare, candidatePosition) {
     var path;
     return(
       candidatePosition != position &&
       board.position(position).side != candidateSquare.side &&
-      (path = findPath(position, candidatePosition, board)) &&
-      !_.any(path, function(step) { return board.isOccupied(step); })
+      findClearPath(position, candidatePosition, board)
     );
   };
 }
 
-function diagonalPath(position1, position2, board) {
+function clearDiagonalPath(position1, position2, board) {
   var distance = getDistance(position1, position2);
   if(Math.abs(distance.rank) != Math.abs(distance.file)) return false;
 
-  return board.filterSquares(function(square, position) {
-    distance = getDistance(position1, position);
+  return _.all(
+    board.filterSquares(function(square, position) {
+      distance = getDistance(position1, position);
 
-    return (
-      Math.abs(distance.rank) == Math.abs(distance.file) &&
-      between(position1[0], position[0], position2[0]) &&
-      between(position1[1], position[1], position2[1])
-    );
-  });
+      return (
+        Math.abs(distance.rank) == Math.abs(distance.file) &&
+        between(position1[0], position[0], position2[0]) &&
+        between(position1[1], position[1], position2[1])
+      );
+    }), function(position) { return !board.isOccupied(position); }
+  );
 }
 
-function horizontalOrVerticalPath(position1, position2, board) {
+function clearHorizontalOrVerticalPath(position1, position2, board) {
   if(!(position1[0] == position2[0] ^ position1[1] == position2[1])) return false;
 
   var commonCoordinate   = (position1[0] == position2[0] ? 0 : 1);
   var uncommonCoordinate = (position1[0] == position2[0] ? 1 : 0);
 
-  return board.filterSquares(function(square, position) {
-    return (
-      position[commonCoordinate] == position1[commonCoordinate] &&
-      between(position1[uncommonCoordinate],
-              position[uncommonCoordinate],
-              position2[uncommonCoordinate])
-    );
-  });
+  return _.all(
+    board.filterSquares(function(square, position) {
+      return (
+        position[commonCoordinate] == position1[commonCoordinate] &&
+        between(position1[uncommonCoordinate],
+                position[uncommonCoordinate],
+                position2[uncommonCoordinate])
+      );
+    }), function(position) { return !board.isOccupied(position); }
+  );
 }
 
 function detectThreats(positionToThreaten, board) {
