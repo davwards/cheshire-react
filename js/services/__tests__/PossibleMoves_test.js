@@ -1,6 +1,7 @@
 jest.dontMock('../PossibleMoves');
 jest.dontMock('../../models/Board');
 jest.dontMock('../../constants/Pieces');
+jest.dontMock('../MovementUtils');
 
 var _ = require('lodash');
 
