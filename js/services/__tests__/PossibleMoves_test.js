@@ -4,16 +4,16 @@ jest.mock('../movementPredicate');
 
 var _ = require('lodash');
 
+var BoardModel = require('../../models/Board');
+var PossibleMoves;
+var movementPredicate;
+var movesIntoCheck;
+var board;
+
 describe('Possible Moves', function() {
-  var movementPredicate;
-  var movesIntoCheck;
-  var board;
-  var BoardModel;
-  var PossibleMoves;
   beforeEach(function(){
     movementPredicate = require('../movementPredicate');
     movesIntoCheck = require('../movesIntoCheck');
-    BoardModel = require('../../models/Board');
     PossibleMoves = require('../PossibleMoves');
 
     board = new BoardModel();
