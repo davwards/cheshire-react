@@ -2,6 +2,7 @@ jest.dontMock('../PossibleMoves');
 jest.dontMock('../../models/Board');
 jest.dontMock('../../constants/Pieces');
 jest.dontMock('../MovementUtils');
+jest.dontMock('../movementPredicate');
 
 var _ = require('lodash');
 
