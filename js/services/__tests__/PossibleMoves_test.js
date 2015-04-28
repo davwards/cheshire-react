@@ -4,6 +4,7 @@ jest.dontMock('../../constants/Pieces');
 jest.dontMock('../MovementUtils');
 jest.dontMock('../movementPredicate');
 jest.dontMock('../detectThreats');
+jest.dontMock('../movesIntoCheck');
 
 var _ = require('lodash');
 
