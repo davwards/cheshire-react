@@ -1,5 +1,4 @@
-jest.dontMock('../Board');
-jest.dontMock('../../constants/Pieces');
+jest.autoMockOff();
 
 var _ = require('lodash');
 

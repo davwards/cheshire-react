@@ -1,5 +1,6 @@
-jest.dontMock('../GameBoardStore');
-jest.dontMock('../../models/Board');
+jest.autoMockOff();
+jest.mock('../../dispatcher/AppDispatcher');
+jest.mock('../../services/PossibleMoves');
 
 var _ = require('lodash');
 
