@@ -60,13 +60,7 @@ Board.prototype.isOccupied = function isOccupied(position) {
 }
 
 Board.prototype.filterSquares = function filterSquares(predicate) {
-  return _.chain(this.positions)
-    .map(function(file, fileName) {
-      return _.map(file, function(squareInfo, rankName) {
-        return {info: squareInfo, position: rankName + fileName};
-      })
-    })
-    .flatten()
+  return _.chain(this.listSquares())
     .select(function(candidate) { return predicate(candidate); })
     .map(function(square) { return square.position; })
     .value();
@@ -79,6 +73,17 @@ Board.prototype.eachSquare = function eachSquare(predicate) {
     });
   });
 }
+
+Board.prototype.listSquares = function listSquares() {
+  return _.chain(this.positions)
+    .map(function(file, fileName) {
+      return _.map(file, function(squareInfo, rankName) {
+        return {info: squareInfo, position: rankName + fileName};
+      })
+    })
+    .flatten()
+    .value();
+};
 
 Board.prototype.findKing = function findKing(side) {
   return this.filterSquares(function(square) {

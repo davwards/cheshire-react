@@ -134,6 +134,18 @@ describe('Board model', function() {
     });
   });
 
+  describe('listSquares', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    it('provides a list of all squares with their positions and data', function(){
+      var list = board.listSquares();
+      expect(list.length).toEqual(64);
+      expect(list).toContain({position: 'a1', info: {piece: Pieces.ROOK, side: Pieces.sides.WHITE}});
+      expect(list).toContain({position: 'h8', info: {piece: Pieces.ROOK, side: Pieces.sides.BLACK}});
+    });
+  });
+
   describe('filterSquares', function() {
     var board;
     beforeEach(function() { board = new BoardModel(); });
