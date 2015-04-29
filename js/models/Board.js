@@ -37,16 +37,16 @@ Board.prototype.setPossibleMove = function setPossibleMove(position) {
 };
 
 Board.prototype.clearSelection = function clearSelection() {
-  this.eachSquare(function(square) {
-    square.selected = false;
-    square.possibleMove = false;
+  _.each(this.listSquares(), function(square) {
+    square.info.selected = false;
+    square.info.possibleMove = false;
   });
 };
 
 Board.prototype.clearBoard = function clearBoard() {
-  this.eachSquare(function(square) {
-    _.each(Object.keys(square), function(key) {
-      square[key] = undefined;
+  _.each(this.listSquares(), function(square) {
+    _.each(Object.keys(square.info), function(key) {
+      square.info[key] = undefined;
     });
   });
 };
@@ -65,14 +65,6 @@ Board.prototype.filterSquares = function filterSquares(predicate) {
     .map(function(square) { return square.position; })
     .value();
 };
-
-Board.prototype.eachSquare = function eachSquare(predicate) {
-  _.each(this.positions, function(file) {
-    _.each(file, function(square) {
-      predicate(square);
-    });
-  });
-}
 
 Board.prototype.listSquares = function listSquares() {
   return _.chain(this.positions)
