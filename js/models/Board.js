@@ -45,14 +45,17 @@ Board.prototype.clearSelection = function clearSelection() {
 
 Board.prototype.clearBoard = function clearBoard() {
   _.each(this.listSquares(), function(square) {
-    _.each(Object.keys(square.info), function(key) {
-      square.info[key] = undefined;
-    });
+    clearSquareInfo(square.info);
   });
 };
 
 Board.prototype.placePiece = function placePiece(piece, position) {
   this.positions[position[1]][position[0]] = piece;
+};
+
+Board.prototype.removePiece = function removePiece(position) {
+  var piece = this.info(position);
+  clearSquareInfo(piece);
 };
 
 Board.prototype.isOccupied = function isOccupied(position) {
@@ -167,5 +170,11 @@ function initialPosition() {
     }
   }
 }
+
+function clearSquareInfo(squareInfo) {
+  _.each(Object.keys(squareInfo), function(key) {
+    squareInfo[key] = undefined;
+  });
+};
 
 module.exports = Board;

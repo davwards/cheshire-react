@@ -134,6 +134,20 @@ describe('Board model', function() {
     });
   });
 
+  describe('removePiece', function() {
+    var board;
+    beforeEach(function() { board = new BoardModel(); });
+
+    it('removes the piece at the given position', function() {
+      var piece = { piece: Pieces.ROOK, side: Pieces.sides.BLACK }
+      board.placePiece(piece, 'e4');
+
+      expect(board.isOccupied('e4')).toBeTruthy();
+      board.removePiece('e4');
+      expect(board.isOccupied('e4')).toBeFalsy();
+    });
+  });
+
   describe('listSquares', function() {
     var board;
     beforeEach(function() { board = new BoardModel(); });
