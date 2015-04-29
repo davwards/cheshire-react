@@ -33,17 +33,17 @@ describe('Board model', function() {
     });
 
     it('removes the piece from the starting postion', function(){
-      expect(board.position(start).piece).toBeTruthy();
+      expect(board.info(start).piece).toBeTruthy();
       board.move(start, destination);
-      expect(board.position(start).piece).toBeFalsy();
+      expect(board.info(start).piece).toBeFalsy();
     });
 
     it('places the piece at its new location', function(){
-      var piece = board.position(start);
+      var piece = board.info(start);
 
-      expect(board.position(destination)).not.toEqual(piece);
+      expect(board.info(destination)).not.toEqual(piece);
       board.move(start, destination);
-      expect(board.position(destination)).toEqual(piece);
+      expect(board.info(destination)).toEqual(piece);
     });
 
     describe('when start and destination are the same', function() {
@@ -52,9 +52,9 @@ describe('Board model', function() {
       });
 
       it('does not destroy the piece', function(){
-        expect(board.position(start).piece).toBeTruthy();
+        expect(board.info(start).piece).toBeTruthy();
         board.move(start, destination);
-        expect(board.position(start).piece).toBeTruthy();
+        expect(board.info(start).piece).toBeTruthy();
       });
     });
   });
@@ -67,9 +67,9 @@ describe('Board model', function() {
     });
 
     it('sets the given position as selected', function() {
-      expect(board.position(selectedPosition).selected).toBeFalsy();
+      expect(board.info(selectedPosition).selected).toBeFalsy();
       board.select(selectedPosition);
-      expect(board.position(selectedPosition).selected).toBeTruthy();
+      expect(board.info(selectedPosition).selected).toBeTruthy();
     });
 
     it('clears the previous selection', function() {
@@ -77,9 +77,9 @@ describe('Board model', function() {
       expect(previousSelection).not.toEqual(selectedPosition);
       board.select(previousSelection);
 
-      expect(board.position(previousSelection).selected).toBeTruthy();
+      expect(board.info(previousSelection).selected).toBeTruthy();
       board.select(selectedPosition);
-      expect(board.position(previousSelection).selected).toBeFalsy();
+      expect(board.info(previousSelection).selected).toBeFalsy();
     });
   });
 
@@ -128,9 +128,9 @@ describe('Board model', function() {
     it('puts the given piece at the given position', function() {
       var piece = { piece: Pieces.ROOK, side: Pieces.sides.BLACK }
 
-      expect(board.position('e4')).not.toEqual(piece);
+      expect(board.info('e4')).not.toEqual(piece);
       board.placePiece(piece, 'e4');
-      expect(board.position('e4')).toEqual(piece);
+      expect(board.info('e4')).toEqual(piece);
     });
   });
 

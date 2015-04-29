@@ -18,7 +18,7 @@ var _selectedSquare;
 
 function setSelected(rank, file) {
   if(_selectedSquare) {
-    if(_board.position(rank+file).possibleMove) {
+    if(_board.info(rank+file).possibleMove) {
       _board.move(_selectedSquare, rank+file);
     }
 

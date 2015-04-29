@@ -8,7 +8,7 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   var rank = position[0], file = position[1];
   var direction, startingFile, opposingSide;
 
-  if(board.position(position).side == Pieces.sides.BLACK)
+  if(board.info(position).side == Pieces.sides.BLACK)
     direction = -1, startingFile = '7', opposingSide = Pieces.sides.WHITE;
   else
     direction = 1, startingFile = '2', opposingSide = Pieces.sides.BLACK;
@@ -31,7 +31,7 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
 
 movementPredicates[Pieces.KNIGHT] = function knight(position, board) {
   return function(candidateSquare, candidatePosition) {
-    if(board.position(position).side == candidateSquare.side) return false;
+    if(board.info(position).side == candidateSquare.side) return false;
 
     var rankDistance = Math.abs(utils.getDistance(candidatePosition, position).rank);
     var fileDistance = Math.abs(utils.getDistance(candidatePosition, position).file);
@@ -72,12 +72,12 @@ function linePiece(position, board, findClearPath) {
     var path;
     return(
       candidatePosition != position &&
-      board.position(position).side != candidateSquare.side &&
+      board.info(position).side != candidateSquare.side &&
       findClearPath(position, candidatePosition, board)
     );
   };
 }
 
 module.exports = function movementPredicate(position, board) {
-  return movementPredicates[board.position(position).piece](position, board);
+  return movementPredicates[board.info(position).piece](position, board);
 };

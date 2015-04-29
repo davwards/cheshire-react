@@ -6,7 +6,7 @@ var Board = function Board() {
   this.positions = initialPosition();
 };
 
-Board.prototype.position = function position(positionName) {
+Board.prototype.info = function info(positionName) {
   var rank = positionName[0];
   var file = positionName[1];
 
@@ -14,7 +14,7 @@ Board.prototype.position = function position(positionName) {
 };
 
 Board.prototype.move = function move(start, destination){
-  var piece = this.position(start);
+  var piece = this.info(start);
   this.placePiece({}, start);
   this.placePiece(piece, destination);
 };
@@ -29,11 +29,11 @@ Board.prototype.draftMove = function draftMove(start, destination){
 
 Board.prototype.select = function select(selectedPosition) {
   this.clearSelection();
-  this.position(selectedPosition).selected = true
+  this.info(selectedPosition).selected = true
 };
 
 Board.prototype.setPossibleMove = function setPossibleMove(position) {
-  this.position(position).possibleMove = true;
+  this.info(position).possibleMove = true;
 };
 
 Board.prototype.clearSelection = function clearSelection() {
@@ -56,7 +56,7 @@ Board.prototype.placePiece = function placePiece(piece, position) {
 };
 
 Board.prototype.isOccupied = function isOccupied(position) {
-  return this.position(position) && this.position(position).piece
+  return this.info(position) && this.info(position).piece
 }
 
 Board.prototype.filterSquares = function filterSquares(predicate) {

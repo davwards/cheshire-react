@@ -16,11 +16,11 @@ describe('movementPredicate', function() {
   };
 
   function expectToHaveMove(start, end) {
-    expect(movementPredicate(start, board)(board.position(end), end)).toBeTruthy();
+    expect(movementPredicate(start, board)(board.info(end), end)).toBeTruthy();
   }
 
   function expectNotToHaveMove(start, end) {
-    expect(movementPredicate(start, board)(board.position(end), end)).toBeFalsy();
+    expect(movementPredicate(start, board)(board.info(end), end)).toBeFalsy();
   }
 
   describe('A pawn', function() {
