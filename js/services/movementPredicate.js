@@ -15,13 +15,13 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
 
   var range = (file == startingFile ? 2 : 1);
 
-  return function(candidateSquare, candidatePosition) {
-    var rankDistance = Math.abs(utils.getDistance(candidatePosition, position).rank);
-    var fileDistance = utils.getDistance(candidatePosition, position).file * direction;
+  return function(candidate) {
+    var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
+    var fileDistance = utils.getDistance(candidate.position, position).file * direction;
 
     var captureOpportunity = (rankDistance == 1 && fileDistance == 1 &&
-                              candidateSquare.side == opposingSide);
-    var blocked = board.isOccupied(candidatePosition) ||
+                              candidate.info.side == opposingSide);
+    var blocked = board.isOccupied(candidate.position) ||
                   board.isOccupied(rank + (parseInt(file)+direction));
     var tooFar = rankDistance != 0 || fileDistance <= 0 || fileDistance > range;
 
@@ -30,11 +30,11 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
 };
 
 movementPredicates[Pieces.KNIGHT] = function knight(position, board) {
-  return function(candidateSquare, candidatePosition) {
-    if(board.info(position).side == candidateSquare.side) return false;
+  return function(candidate) {
+    if(board.info(position).side == candidate.info.side) return false;
 
-    var rankDistance = Math.abs(utils.getDistance(candidatePosition, position).rank);
-    var fileDistance = Math.abs(utils.getDistance(candidatePosition, position).file);
+    var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
+    var fileDistance = Math.abs(utils.getDistance(candidate.position, position).file);
 
     return (rankDistance == 2 && fileDistance == 1) || (rankDistance == 1 && fileDistance == 2);
   }
@@ -68,12 +68,12 @@ movementPredicates[Pieces.KING] = function king(position, board) {
 };
 
 function linePiece(position, board, findClearPath) {
-  return function(candidateSquare, candidatePosition) {
+  return function(candidate) {
     var path;
     return(
-      candidatePosition != position &&
-      board.info(position).side != candidateSquare.side &&
-      findClearPath(position, candidatePosition, board)
+      candidate.position != position &&
+      board.info(position).side != candidate.info.side &&
+      findClearPath(position, candidate.position, board)
     );
   };
 }

@@ -13,13 +13,13 @@ describe('Board model', function() {
 
     it('has all the pieces marked as unmoved', function() {
       expect(board.filterSquares(function(square) {
-        return square.hasMoved;
+        return square.info.hasMoved;
       })).toEqual([]);
     });
 
     it('has all the positions marked as unselected', function() {
       expect(board.filterSquares(function(square) {
-        return square.selected;
+        return square.info.selected;
       })).toEqual([]);
     });
   });
@@ -93,13 +93,13 @@ describe('Board model', function() {
       board.setPossibleMove('d8');
 
       expect(board.filterSquares(function(square) {
-        return square.selected || square.possibleMove;
+        return square.info.selected || square.info.possibleMove;
       })).not.toEqual([]);
 
       board.clearSelection();
 
       expect(board.filterSquares(function(square) {
-        return square.selected || square.possibleMove;
+        return square.info.selected || square.info.possibleMove;
       })).toEqual([]);
     });
   });
@@ -109,14 +109,14 @@ describe('Board model', function() {
     beforeEach(function() { board = new BoardModel(); });
 
     it('removes all pieces from the board', function() {
-      expect(board.filterSquares(function(square, position) {
-        return board.isOccupied(position);
+      expect(board.filterSquares(function(square) {
+        return board.isOccupied(square.position);
       })).not.toEqual([]);
 
       board.clearBoard();
 
-      expect(board.filterSquares(function(square, position) {
-        return board.isOccupied(position);
+      expect(board.filterSquares(function(square) {
+        return board.isOccupied(square.position);
       })).toEqual([]);
     });
   });
@@ -141,17 +141,17 @@ describe('Board model', function() {
     it('returns a list of positions for which the given predicate is true', function(){
       expect(
         board.filterSquares(function(square) {
-          return square.piece == Pieces.ROOK;
+          return square.info.piece == Pieces.ROOK;
         }).sort()
       ).toEqual(['a1', 'a8', 'h1', 'h8']);
     });
 
-    it('provides the position of the square to the predicate', function(){
+    it('provides the position of the square and info about it to the predicate', function(){
       expect(
-        board.filterSquares(function(square, position) {
-          return position[0] == 'a' && parseInt(position[1]) < 4;
+        board.filterSquares(function(square) {
+          return square.position[0] == 'a' && square.info.piece == Pieces.ROOK
         })
-      ).toEqual(['a1', 'a2', 'a3']);
+      ).toEqual(['a1', 'a8']);
     });
   });
 

@@ -25,8 +25,8 @@ describe('Possible Moves', function() {
   it('returns available moves that do not result in check', function() {
     // Imaginary chess piece that can only move vertically
     movementPredicate.mockImpl(function(position, board) {
-      return function(destinationInfo, destinationPosition) {
-        return destinationPosition[0] == position[0];
+      return function(destination) {
+        return destination.position[0] == position[0];
       };
     });
 

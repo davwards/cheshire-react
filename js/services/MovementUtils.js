@@ -16,7 +16,8 @@ function clearDiagonalPath(position1, position2, board) {
   if(Math.abs(distance.rank) != Math.abs(distance.file)) return false;
 
   return _.all(
-    board.filterSquares(function(square, position) {
+    board.filterSquares(function(square) {
+      var position = square.position;
       distance = getDistance(position1, position);
 
       return (
@@ -35,11 +36,11 @@ function clearHorizontalOrVerticalPath(position1, position2, board) {
   var uncommonCoordinate = (position1[0] == position2[0] ? 1 : 0);
 
   return _.all(
-    board.filterSquares(function(square, position) {
+    board.filterSquares(function(square) {
       return (
-        position[commonCoordinate] == position1[commonCoordinate] &&
+        square.position[commonCoordinate] == position1[commonCoordinate] &&
         between(position1[uncommonCoordinate],
-                position[uncommonCoordinate],
+                square.position[uncommonCoordinate],
                 position2[uncommonCoordinate])
       );
     }), function(position) { return !board.isOccupied(position); }

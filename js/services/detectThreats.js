@@ -4,11 +4,11 @@ module.exports = function detectThreats(position, board) {
   if(!position) return [];
   var positionInfo = board.info(position);
 
-  return board.filterSquares(function(threatInfo, threatPosition) {
+  return board.filterSquares(function(threat) {
     return (
-      board.isOccupied(threatPosition) &&
-      positionInfo.side != threatInfo.side &&
-      movementPredicate(threatPosition, board)(positionInfo, position)
+      board.isOccupied(threat.position) &&
+      positionInfo.side != threat.info.side &&
+      movementPredicate(threat.position, board)({info: positionInfo, position: position})
     );
   });
 }
