@@ -1,14 +1,14 @@
 var movementPredicate = require('./movementPredicate');
 
-module.exports = function detectThreats(positionToThreaten, board) {
-  if(!positionToThreaten) return [];
-  var squareToThreaten = board.info(positionToThreaten);
+module.exports = function detectThreats(position, board) {
+  if(!position) return [];
+  var positionInfo = board.info(position);
 
-  return board.filterSquares(function(potentialThreatSquare, potentialThreatPosition) {
-    if(!board.isOccupied(potentialThreatPosition)) return false;
-    if(board.info(positionToThreaten).side == potentialThreatSquare.side) return false;
-
-    var isThreatTo = movementPredicate(potentialThreatPosition, board);
-    return isThreatTo(squareToThreaten, positionToThreaten);
+  return board.filterSquares(function(threatInfo, threatPosition) {
+    return (
+      board.isOccupied(threatPosition) &&
+      positionInfo.side != threatInfo.side &&
+      movementPredicate(threatPosition, board)(positionInfo, position)
+    );
   });
 }
