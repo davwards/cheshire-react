@@ -31,7 +31,7 @@ describe('Possible Moves', function() {
     });
 
     // Any move south results in check
-    movesIntoCheck.mockImpl(function(board, position){
+    movesIntoCheck.mockImpl(function(position, board){
       return function(possibleMove) {
         return possibleMove[1] >= position[1];
       };
