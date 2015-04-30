@@ -112,6 +112,9 @@ describe('GameBoardStore', function() {
         });
 
         it('moves the previously selected piece to the new square, replacing the current occupant', function(){
+          var pieceType = movedPiece.piece;
+          var pieceSide = movedPiece.side;
+
           handleAction({
             actionType: Actions.SELECT_SQUARE,
             rank: selectedRank,
@@ -119,7 +122,8 @@ describe('GameBoardStore', function() {
           });
 
           expect(GameBoardStore.getBoardState()[sourceFile][sourceRank].piece).toBeFalsy();
-          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank]).toEqual(movedPiece);
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].piece).toEqual(pieceType);
+          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].side).toEqual(pieceSide);
         });
 
         it('clears the selected status on the new and previous selections', function() {

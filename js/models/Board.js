@@ -1,6 +1,7 @@
 var _ = require('lodash');
 
 var Pieces = require('../constants/Pieces');
+var BasicMove = require('../services/BasicMove');
 
 var Board = function Board() {
   this.positions = initialPosition();
@@ -10,13 +11,11 @@ Board.prototype.info = function info(positionName) {
   var rank = positionName[0];
   var file = positionName[1];
 
-  return this.positions[file][rank];
+  return _.clone(this.positions[file][rank]);
 };
 
 Board.prototype.move = function move(start, destination){
-  var piece = this.info(start);
-  this.placePiece({}, start);
-  this.placePiece(piece, destination);
+  BasicMove(start, destination)(this);
 };
 
 Board.prototype.draftMove = function draftMove(start, destination){
@@ -27,25 +26,27 @@ Board.prototype.draftMove = function draftMove(start, destination){
   return possibleWorld;
 };
 
-Board.prototype.select = function select(selectedPosition) {
+Board.prototype.select = function select(position) {
   this.clearSelection();
-  this.info(selectedPosition).selected = true
+  setInfo(this, position, 'selected', true)
 };
 
 Board.prototype.setPossibleMove = function setPossibleMove(position) {
-  this.info(position).possibleMove = true;
+  setInfo(this, position, 'possibleMove', true)
 };
 
 Board.prototype.clearSelection = function clearSelection() {
-  _.each(this.listSquares(), function(square) {
-    square.info.selected = false;
-    square.info.possibleMove = false;
+  var board = this;
+  _.each(board.listSquares(), function(square) {
+    setInfo(board, square.position, 'selected', false)
+    setInfo(board, square.position, 'possibleMove', false)
   });
 };
 
 Board.prototype.clearBoard = function clearBoard() {
-  _.each(this.listSquares(), function(square) {
-    clearSquareInfo(square.info);
+  var board = this;
+  _.each(board.listSquares(), function(square) {
+    clearSquareInfo(board, square.position);
   });
 };
 
@@ -54,8 +55,7 @@ Board.prototype.placePiece = function placePiece(piece, position) {
 };
 
 Board.prototype.removePiece = function removePiece(position) {
-  var piece = this.info(position);
-  clearSquareInfo(piece);
+  clearSquareInfo(this, position);
 };
 
 Board.prototype.isOccupied = function isOccupied(position) {
@@ -171,10 +171,15 @@ function initialPosition() {
   }
 }
 
-function clearSquareInfo(squareInfo) {
+function clearSquareInfo(board, squarePosition) {
+  squareInfo = board.positions[squarePosition[1]][squarePosition[0]];
   _.each(Object.keys(squareInfo), function(key) {
     squareInfo[key] = undefined;
   });
 };
+
+function setInfo(board, position, key, value) {
+  board.positions[position[1]][position[0]][key] = value;
+}
 
 module.exports = Board;
