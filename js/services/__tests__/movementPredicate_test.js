@@ -1,7 +1,12 @@
 jest.autoMockOff();
 
+jest.mock('../BasicMove');
+
+var _ = require('lodash');
+
 var Pieces = require('../../constants/Pieces');
 var BoardModel = require('../../models/Board');
+var BasicMove = require('../BasicMove');
 var movementPredicate = require('../movementPredicate');
 
 describe('movementPredicate', function() {
@@ -9,10 +14,19 @@ describe('movementPredicate', function() {
   beforeEach(function(){
     board = new BoardModel();
     board.clearBoard();
+
+    BasicMove.mockImpl(function(start, dest) {
+      return 'BASIC MOVE';
+    });
   });
 
   function expectMoveSet(position, moveSet) {
-    expect(board.filterSquares(movementPredicate(position, board)).sort()).toEqual(moveSet.sort());
+    _.each(board.listSquares(), function(square) {
+      if(_.contains(moveSet, square.position))
+        expect(movementPredicate(position, board)(square)).toEqual('BASIC MOVE');
+      else
+        expect(movementPredicate(position, board)(square)).toBeFalsy();
+    });
   };
 
   function expectToHaveMove(start, end) {

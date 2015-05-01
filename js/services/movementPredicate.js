@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var utils = require('./MovementUtils');
 var Pieces = require('../constants/Pieces');
+var BasicMove = require('./BasicMove');
 
 var movementPredicates = {};
 
@@ -25,7 +26,8 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
                   board.isOccupied(rank + (parseInt(file)+direction));
     var tooFar = rankDistance != 0 || fileDistance <= 0 || fileDistance > range;
 
-    return captureOpportunity || (!blocked && !tooFar)
+    if(captureOpportunity || (!blocked && !tooFar))
+      return BasicMove(position, candidate.position);
   };
 };
 
@@ -36,7 +38,8 @@ movementPredicates[Pieces.KNIGHT] = function knight(position, board) {
     var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
     var fileDistance = Math.abs(utils.getDistance(candidate.position, position).file);
 
-    return (rankDistance == 2 && fileDistance == 1) || (rankDistance == 1 && fileDistance == 2);
+    if((rankDistance == 2 && fileDistance == 1) || (rankDistance == 1 && fileDistance == 2))
+      return BasicMove(position, candidate.position);
   }
 };
 
@@ -70,11 +73,11 @@ movementPredicates[Pieces.KING] = function king(position, board) {
 function linePiece(position, board, findClearPath) {
   return function(candidate) {
     var path;
-    return(
+    if(
       candidate.position != position &&
       board.info(position).side != candidate.info.side &&
       findClearPath(position, candidate.position, board)
-    );
+    ) return BasicMove(position, candidate.position);
   };
 }
 
