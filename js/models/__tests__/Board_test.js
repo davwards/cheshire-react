@@ -24,41 +24,6 @@ describe('Board model', function() {
     });
   });
 
-  describe('moving pieces', function(){
-    var board, start, destination;
-    beforeEach(function(){
-      board = new BoardModel();
-      start = 'b1';
-      destination = 'c1';
-    });
-
-    it('removes the piece from the starting postion', function(){
-      expect(board.info(start).piece).toBeTruthy();
-      board.move(start, destination);
-      expect(board.info(start).piece).toBeFalsy();
-    });
-
-    it('places the piece at its new location', function(){
-      var piece = board.info(start);
-
-      expect(board.info(destination)).not.toEqual(piece);
-      board.move(start, destination);
-      expect(board.info(destination)).toEqual(piece);
-    });
-
-    describe('when start and destination are the same', function() {
-      beforeEach(function(){
-        destination = start;
-      });
-
-      it('does not destroy the piece', function(){
-        expect(board.info(start).piece).toBeTruthy();
-        board.move(start, destination);
-        expect(board.info(start).piece).toBeTruthy();
-      });
-    });
-  });
-
   describe('setting selection', function() {
     var board, selectedPosition;
     beforeEach(function(){
