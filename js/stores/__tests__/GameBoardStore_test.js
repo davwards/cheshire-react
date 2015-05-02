@@ -3,6 +3,7 @@ jest.mock('../../dispatcher/AppDispatcher');
 jest.mock('../../services/PossibleMoves');
 
 var _ = require('lodash');
+var BasicMove = require('../../services/BasicMove');
 
 describe('GameBoardStore', function() {
   var handleAction;
@@ -43,7 +44,10 @@ describe('GameBoardStore', function() {
         });
 
         it('highlights the selected piece\'s possible moves', function() {
-          PossibleMoves.mockReturnValue(['g4', 'c3']);
+          PossibleMoves.mockReturnValue({
+            g4: 'MOVE TO g4',
+            c3: 'MOVE TO c3'
+          });
 
           expect(GameBoardStore.getBoardState()['4']['g'].possibleMove).toBeFalsy();
           expect(GameBoardStore.getBoardState()['3']['c'].possibleMove).toBeFalsy();
@@ -54,8 +58,8 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()['4']['g'].possibleMove).toBeTruthy();
-          expect(GameBoardStore.getBoardState()['3']['c'].possibleMove).toBeTruthy();
+          expect(GameBoardStore.getBoardState()['4']['g'].possibleMove).toEqual('MOVE TO g4');
+          expect(GameBoardStore.getBoardState()['3']['c'].possibleMove).toEqual('MOVE TO c3');
         });
       });
 
@@ -85,12 +89,12 @@ describe('GameBoardStore', function() {
       var sourceFile = '2';
       var movedPiece;
 
-      var possibleMove1 = 'a3';
-      var possibleMove2 = 'a4';
+      var possibleMoveFunction;
 
       beforeEach(function(){
         PossibleMoves = require('../../services/PossibleMoves');
-        PossibleMoves.mockReturnValue([possibleMove1, possibleMove2]);
+        possibleMoveFunction = jest.genMockFunction();
+        PossibleMoves.mockReturnValue({ a3: possibleMoveFunction });
 
         movedPiece = GameBoardStore.getBoardState()[sourceFile][sourceRank];
         expect(movedPiece.piece).toBeTruthy();
@@ -105,15 +109,13 @@ describe('GameBoardStore', function() {
       });
 
       describe('and the target square is a possible move', function() {
-        var selectedRank = possibleMove1[0];
-        var selectedFile = possibleMove1[1];
+        var selectedRank = 'a', selectedFile = '3';
         beforeEach(function() {
           expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].possibleMove).toBeTruthy();
         });
 
-        it('moves the previously selected piece to the new square, replacing the current occupant', function(){
-          var pieceType = movedPiece.piece;
-          var pieceSide = movedPiece.side;
+        it('invokes the square\'s move function on the board', function(){
+          expect(possibleMoveFunction).not.toBeCalled();
 
           handleAction({
             actionType: Actions.SELECT_SQUARE,
@@ -121,9 +123,7 @@ describe('GameBoardStore', function() {
             file: selectedFile
           });
 
-          expect(GameBoardStore.getBoardState()[sourceFile][sourceRank].piece).toBeFalsy();
-          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].piece).toEqual(pieceType);
-          expect(GameBoardStore.getBoardState()[selectedFile][selectedRank].side).toEqual(pieceSide);
+          expect(possibleMoveFunction).toBeCalled();
         });
 
         it('clears the selected status on the new and previous selections', function() {
@@ -216,10 +216,10 @@ describe('GameBoardStore', function() {
         PossibleMoves = require('../../services/PossibleMoves');
         PossibleMoves.mockImplementation(function(board, position){
           if(position == 'd2') {
-            return ['d3'];
+            return {d3: BasicMove('d2', 'd3')};
           }
           if(position == 'd7') {
-            return ['d6'];
+            return {d6: BasicMove('d7', 'd6')};
           }
         });
       });

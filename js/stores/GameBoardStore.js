@@ -19,7 +19,7 @@ var _selectedSquare;
 function setSelected(rank, file) {
   if(_selectedSquare) {
     if(_board.info(rank+file).possibleMove) {
-      _board.move(_selectedSquare, rank+file);
+      _board.info(rank+file).possibleMove(_board);
     }
 
     _board.clearSelection();
@@ -28,8 +28,8 @@ function setSelected(rank, file) {
   else if(_board.isOccupied(rank+file)) {
     _board.select(rank+file);
     _selectedSquare = rank + file;
-    _.each(PossibleMoves(_board, rank+file), function(possibleMove){
-      _board.setPossibleMove(possibleMove);
+    _.each(PossibleMoves(_board, rank+file), function(possibleMove, destination){
+      _board.setPossibleMove(destination, possibleMove);
     });
   }
 }

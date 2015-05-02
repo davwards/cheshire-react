@@ -16,14 +16,15 @@ describe('movesIntoCheck', function() {
   });
 
   function expectMovesNotResultingInCheck(position, moves) {
-    var candidates = _.chain(board.listSquares())
-                      .reduce(function(map, square) {
-                        map[square.position] = movementPredicate(position, board)(square);
-                        return map; }, {})
-                      .pick(function(move) { return move; })
-                      .value();
+    var candidates = _.reduce(board.listSquares(), function(map, square) {
+                       map[square.position] = movementPredicate(position, board)(square);
+                       return map;
+                     }, {});
     expect(
-      _.omit(candidates, movesIntoCheck(position, board))
+      _.chain(candidates)
+        .omit(movesIntoCheck(position, board))
+        .pick(function(move) { return move; })
+        .value()
     ).toEqual(moves);
   }
 

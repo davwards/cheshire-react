@@ -31,8 +31,8 @@ Board.prototype.select = function select(position) {
   setInfo(this, position, 'selected', true)
 };
 
-Board.prototype.setPossibleMove = function setPossibleMove(position) {
-  setInfo(this, position, 'possibleMove', true)
+Board.prototype.setPossibleMove = function setPossibleMove(position, move) {
+  setInfo(this, position, 'possibleMove', move)
 };
 
 Board.prototype.clearSelection = function clearSelection() {
