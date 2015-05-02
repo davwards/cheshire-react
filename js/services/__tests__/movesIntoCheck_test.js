@@ -16,13 +16,18 @@ describe('movesIntoCheck', function() {
   });
 
   function expectMovesNotResultingInCheck(position, moves) {
+    var candidates = _.chain(board.listSquares())
+                      .reduce(function(map, square) {
+                        map[square.position] = movementPredicate(position, board)(square);
+                        return map; }, {})
+                      .pick(function(move) { return move; })
+                      .value();
     expect(
-      _.reject(board.filterSquares(movementPredicate(position, board)),
-               movesIntoCheck(position, board))
+      _.omit(candidates, movesIntoCheck(position, board))
     ).toEqual(moves);
   }
 
-  it('detects when a knight moves into check', function() {
+  it.only('detects when a knight moves into check', function() {
     board.placePiece({piece: Pieces.KNIGHT, side: Pieces.sides.WHITE}, 'd5');
     board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'f5');
     board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'a5');

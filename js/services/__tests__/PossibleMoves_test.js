@@ -22,25 +22,27 @@ describe('Possible Moves', function() {
     movesIntoCheck.mockClear();
   });
 
-  it('returns available moves that do not result in check', function() {
+  it('returns a map of positions to available moves that do not result in check', function() {
     // Imaginary chess piece that can only move vertically
     movementPredicate.mockImpl(function(position, board) {
       return function(destination) {
-        return destination.position[0] == position[0];
+        if(destination.position[0] == position[0])
+          return 'MOVE TO ' + destination.position;
       };
     });
 
     // Any move south results in check
     movesIntoCheck.mockImpl(function(position, board){
       return function(possibleMove) {
-        return possibleMove[1] >= position[1];
+        return possibleMove && /([a-h][1-8])/.exec(possibleMove)[1][1] >= position[1];
       };
     });
 
-    expect(PossibleMoves(board, 'd5').sort()).toEqual(['d1','d2','d3','d4']);
+    expect(PossibleMoves(board, 'd5')).toEqual({
+      d1: 'MOVE TO d1',
+      d2: 'MOVE TO d2',
+      d3: 'MOVE TO d3',
+      d4: 'MOVE TO d4',
+    });
   });
 });
-
-function matchingSet(array1, array2) {
-  return _.isEmpty(_.xor(array1, array2));
-}

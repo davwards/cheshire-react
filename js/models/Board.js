@@ -18,11 +18,11 @@ Board.prototype.move = function move(start, destination){
   BasicMove(start, destination)(this);
 };
 
-Board.prototype.draftMove = function draftMove(start, destination){
+Board.prototype.draftMove = function draftMove(position, move){
   var possibleWorld = new Board();
   possibleWorld.positions = _.clone(this.positions, true);
 
-  possibleWorld.move(start, destination);
+  move(possibleWorld);
   return possibleWorld;
 };
 
