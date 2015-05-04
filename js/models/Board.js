@@ -168,10 +168,7 @@ function initialPosition() {
 }
 
 function clearSquareInfo(board, squarePosition) {
-  squareInfo = board.positions[squarePosition[1]][squarePosition[0]];
-  _.each(Object.keys(squareInfo), function(key) {
-    squareInfo[key] = undefined;
-  });
+  board.positions[squarePosition[1]][squarePosition[0]] = {};
 };
 
 function setInfo(board, position, key, value) {
