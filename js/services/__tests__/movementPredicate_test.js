@@ -1,12 +1,15 @@
 jest.autoMockOff();
 
 jest.mock('../BasicMove');
+jest.mock('../CastleMove');
 
 var _ = require('lodash');
 
 var Pieces = require('../../constants/Pieces');
 var BoardModel = require('../../models/Board');
 var BasicMove = require('../BasicMove');
+var CastleMove = require('../CastleMove');
+
 var movementPredicate = require('../movementPredicate');
 
 describe('movementPredicate', function() {
@@ -18,14 +21,27 @@ describe('movementPredicate', function() {
     BasicMove.mockImpl(function(start, dest) {
       return 'BASIC MOVE';
     });
+
+    CastleMove.mockImpl(function(start, dest) {
+      return 'CASTLE MOVE';
+    });
   });
 
-  function expectMoveSet(position, moveSet) {
+  function expectBasicMoves(position, moveSet) {
     _.each(board.listSquares(), function(square) {
       if(_.contains(moveSet, square.position))
         expect(movementPredicate(position, board)(square)).toEqual('BASIC MOVE');
       else
-        expect(movementPredicate(position, board)(square)).toBeFalsy();
+        expect(movementPredicate(position, board)(square)).not.toEqual('BASIC MOVE');
+    });
+  };
+
+  function expectCastleMoves(position, moveSet) {
+    _.each(board.listSquares(), function(square) {
+      if(_.contains(moveSet, square.position))
+        expect(movementPredicate(position, board)(square)).toEqual('CASTLE MOVE');
+      else
+        expect(movementPredicate(position, board)(square)).not.toEqual('CASTLE MOVE');
     });
   };
 
@@ -52,10 +68,10 @@ describe('movementPredicate', function() {
       });
 
       it('can move one or two spaces toward the opponent\'s side', function() {
-        expectMoveSet('b2', ['b3', 'b4']);
-        expectMoveSet('g7', ['g5', 'g6']);
-        expectMoveSet('d2', ['d3', 'd4']);
-        expectMoveSet('e7', ['e5', 'e6']);
+        expectBasicMoves('b2', ['b3', 'b4']);
+        expectBasicMoves('g7', ['g5', 'g6']);
+        expectBasicMoves('d2', ['d3', 'd4']);
+        expectBasicMoves('e7', ['e5', 'e6']);
       });
 
       describe('that is blocked by other pieces', function() {
@@ -67,10 +83,10 @@ describe('movementPredicate', function() {
         });
 
         it('cannot move through obstacles', function() {
-          expectMoveSet('b2', []);
-          expectMoveSet('g7', []);
-          expectMoveSet('d2', ['d3']);
-          expectMoveSet('e7', ['e6']);
+          expectBasicMoves('b2', []);
+          expectBasicMoves('g7', []);
+          expectBasicMoves('d2', ['d3']);
+          expectBasicMoves('e7', ['e6']);
         });
       });
     });
@@ -84,10 +100,10 @@ describe('movementPredicate', function() {
       });
 
       it('can move one space toward the opponent\'s side', function() {
-        expectMoveSet('b3', ['b4']);
-        expectMoveSet('g6', ['g5']);
-        expectMoveSet('d3', ['d4']);
-        expectMoveSet('e6', ['e5']);
+        expectBasicMoves('b3', ['b4']);
+        expectBasicMoves('g6', ['g5']);
+        expectBasicMoves('d3', ['d4']);
+        expectBasicMoves('e6', ['e5']);
       });
     });
 
@@ -100,7 +116,7 @@ describe('movementPredicate', function() {
       });
 
       it('can move to capture enemy pieces', function() {
-        expectMoveSet('e5', ['d4', 'f4']);
+        expectBasicMoves('e5', ['d4', 'f4']);
       });
     });
   });
@@ -113,8 +129,8 @@ describe('movementPredicate', function() {
       board.placePiece(whiteKnight, 'c2');
       board.placePiece(blackKnight, 'e6');
 
-      expectMoveSet('c2', ['a1', 'a3', 'b4', 'd4', 'e1', 'e3']);
-      expectMoveSet('e6', ['c5', 'c7', 'd4', 'd8', 'f4', 'f8', 'g5', 'g7']);
+      expectBasicMoves('c2', ['a1', 'a3', 'b4', 'd4', 'e1', 'e3']);
+      expectBasicMoves('e6', ['c5', 'c7', 'd4', 'd8', 'f4', 'f8', 'g5', 'g7']);
     });
 
     it('can capture opposing but not allied pieces', function() {
@@ -130,8 +146,8 @@ describe('movementPredicate', function() {
       board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'f8');
       board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'g5');
 
-      expectMoveSet('c2', ['a1', 'a3', 'b4', 'e1']);
-      expectMoveSet('e6', ['c5', 'c7', 'd4', 'd8', 'f4', 'g7']);
+      expectBasicMoves('c2', ['a1', 'a3', 'b4', 'e1']);
+      expectBasicMoves('e6', ['c5', 'c7', 'd4', 'd8', 'f4', 'g7']);
     });
   });
 
@@ -143,8 +159,8 @@ describe('movementPredicate', function() {
       board.placePiece(whiteRook, 'c2');
       board.placePiece(blackRook, 'e6');
 
-      expectMoveSet('c2', ['a2', 'b2', 'c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'd2', 'e2', 'f2', 'g2', 'h2']);
-      expectMoveSet('e6', ['a6', 'b6', 'c6', 'd6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e7', 'e8', 'f6', 'g6', 'h6']);
+      expectBasicMoves('c2', ['a2', 'b2', 'c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'd2', 'e2', 'f2', 'g2', 'h2']);
+      expectBasicMoves('e6', ['a6', 'b6', 'c6', 'd6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e7', 'e8', 'f6', 'g6', 'h6']);
     });
 
     it('can capture opposing but not allied pieces', function() {
@@ -182,8 +198,8 @@ describe('movementPredicate', function() {
       board.placePiece(whiteBishop, 'c2');
       board.placePiece(blackBishop, 'e6');
 
-      expectMoveSet('c2', ['a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7']);
-      expectMoveSet('e6', ['f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2']);
+      expectBasicMoves('c2', ['a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7']);
+      expectBasicMoves('e6', ['f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2']);
     });
 
     it('can capture opposing but not allied pieces', function() {
@@ -220,8 +236,8 @@ describe('movementPredicate', function() {
       board.placePiece(whiteQueen, 'c2');
       board.placePiece(blackQueen, 'e6');
 
-      expectMoveSet('c2', ['a2', 'b2', 'c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'd2', 'e2', 'f2', 'g2', 'h2', 'a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7']);
-      expectMoveSet('e6', ['a6', 'b6', 'c6', 'd6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e7', 'e8', 'f6', 'g6', 'h6', 'f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2']);
+      expectBasicMoves('c2', ['a2', 'b2', 'c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'd2', 'e2', 'f2', 'g2', 'h2', 'a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7']);
+      expectBasicMoves('e6', ['a6', 'b6', 'c6', 'd6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e7', 'e8', 'f6', 'g6', 'h6', 'f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2']);
     });
 
     it('can capture opposing but not allied pieces', function() {
@@ -255,7 +271,7 @@ describe('movementPredicate', function() {
 
     it('can move one step in any direction', function() {
       board.placePiece(whiteKing, 'c2');
-      expectMoveSet('c2', ['b1', 'b2', 'b3', 'c1', 'c3', 'd1', 'd2', 'd3']);
+      expectBasicMoves('c2', ['b1', 'b2', 'b3', 'c1', 'c3', 'd1', 'd2', 'd3']);
     });
 
     it('can capture opposing but not allied pieces', function() {
@@ -265,6 +281,54 @@ describe('movementPredicate', function() {
 
       expectToHaveMove('c2', 'd3');
       expectNotToHaveMove('c2', 'b2');
+    });
+
+    describe('that meets the criteria for castling', function() {
+      var rook1, rook2;
+      beforeEach(function() {
+        whiteKing.hasMoved = false;
+        rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        board.placePiece(whiteKing, 'e1');
+        board.placePiece(rook1, 'h1');
+        board.placePiece(rook2, 'a1');
+      });
+
+      it('can castle', function() {
+        expectCastleMoves('e1', ['g1', 'c1']);
+      });
+    });
+
+    describe('that has moved', function() {
+      var rook1, rook2;
+      beforeEach(function() {
+        whiteKing.hasMoved = true;
+        rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        board.placePiece(whiteKing, 'e1');
+        board.placePiece(rook1, 'h1');
+        board.placePiece(rook2, 'a1');
+      });
+
+      it('cannot castle', function() {
+        expectCastleMoves('e1', []);
+      });
+    });
+
+    describe('with a rook that has moved', function() {
+      var rook1, rook2;
+      beforeEach(function() {
+        whiteKing.hasMoved = false;
+        rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: true };
+        rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        board.placePiece(whiteKing, 'e1');
+        board.placePiece(rook1, 'h1');
+        board.placePiece(rook2, 'a1');
+      });
+
+      it.only('cannot castle', function() {
+        expectCastleMoves('e1', ['c1']);
+      });
     });
   });
 });

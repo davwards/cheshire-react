@@ -2,6 +2,7 @@ var _ = require('lodash');
 var utils = require('./MovementUtils');
 var Pieces = require('../constants/Pieces');
 var BasicMove = require('./BasicMove');
+var CastleMove = require('./CastleMove');
 
 var movementPredicates = {};
 
@@ -61,13 +62,35 @@ movementPredicates[Pieces.QUEEN] = function queen(position, board) {
 };
 
 movementPredicates[Pieces.KING] = function king(position, board) {
-  return linePiece(position, board,
-    function oneStepInAnyDirection(position, candidatePosition, board) {
-      return (_.all(utils.getDistance(candidatePosition, position), function(steps) {
-        return Math.abs(steps) <=1;
-      }));
-    }
-  );
+  var oneStepInAnyDirection = linePiece(position, board, function(start, destination, board) {
+    return (_.all(utils.getDistance(destination, start), function(steps) {
+      return Math.abs(steps) <=1;
+    }));
+  });
+
+  var king = board.info(position);
+  var homeFile = (king.side == Pieces.sides.WHITE ? '1' : '8');
+
+  var castleOpportunity = function(candidate) {
+    var distance = utils.getDistance(position, candidate.position);
+    var rankDirection = distance.rank / Math.abs(distance.rank);
+
+    if(Math.abs(distance.file) != 0 ||
+       Math.abs(distance.rank) != 2 ||
+       position[1] != homeFile ||
+       king.hasMoved)
+      return false;
+
+    var rookPosition = (rankDirection == 1 ? 'a'+homeFile : 'h'+homeFile);
+    var rookSpace = board.info(rookPosition);
+
+    if(!rookSpace.hasMoved && rookSpace.piece == Pieces.ROOK && rookSpace.side == king.side)
+      return CastleMove(position, candidate.position);
+  };
+
+  return function(candidate) {
+    return oneStepInAnyDirection(candidate) || castleOpportunity(candidate);
+  }
 };
 
 function linePiece(position, board, findClearPath) {
