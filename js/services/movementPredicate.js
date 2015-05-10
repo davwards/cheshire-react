@@ -10,6 +10,7 @@ var Pieces = require('../constants/Pieces');
 var detectThreats = require('./detectThreats');
 var BasicMove = require('./BasicMove');
 var CastleMove = require('./CastleMove');
+var PawnJumpMove = require('./PawnJumpMove');
 
 movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   var rank = position[0], file = position[1];
@@ -33,7 +34,9 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
     var tooFar = rankDistance != 0 || fileDistance <= 0 || fileDistance > range;
 
     if(captureOpportunity || (!blocked && !tooFar))
-      return BasicMove(position, candidate.position);
+      return fileDistance == 2 ?
+        PawnJumpMove(position, candidate.position) :
+        BasicMove(position, candidate.position);
   };
 };
 

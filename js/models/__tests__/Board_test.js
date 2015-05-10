@@ -22,6 +22,10 @@ describe('Board model', function() {
         return square.info.selected;
       })).toEqual([]);
     });
+
+    it('has the lastPawnJump blank', function() {
+      expect(board.lastPawnJump).toBeUndefined();
+    });
   });
 
   describe('setting selection', function() {

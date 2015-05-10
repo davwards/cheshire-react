@@ -27,6 +27,12 @@ describe('BasicMove', function(){
     expect(board.info(destination)).toEqual(_.merge(piece, {hasMoved: true}));
   });
 
+  it('clears the board\'s lastPawnJump', function() {
+    board.lastPawnJump = 'h4';
+    executeMove(board);
+    expect(board.lastPawnJump).toBeUndefined();
+  });
+
   describe('when start and destination are the same', function() {
     beforeEach(function(){
       executeMove = BasicMove(start, start);

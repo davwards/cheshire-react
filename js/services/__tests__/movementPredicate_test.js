@@ -2,6 +2,7 @@ jest.autoMockOff();
 
 jest.mock('../BasicMove');
 jest.mock('../CastleMove');
+jest.mock('../PawnJumpMove');
 
 var _ = require('lodash');
 
@@ -9,6 +10,7 @@ var Pieces = require('../../constants/Pieces');
 var BoardModel = require('../../models/Board');
 var BasicMove = require('../BasicMove');
 var CastleMove = require('../CastleMove');
+var PawnJumpMove = require('../PawnJumpMove');
 
 var movementPredicate = require('../movementPredicate');
 
@@ -18,13 +20,9 @@ describe('movementPredicate', function() {
     board = new BoardModel();
     board.clearBoard();
 
-    BasicMove.mockImpl(function(start, dest) {
-      return 'BASIC MOVE';
-    });
-
-    CastleMove.mockImpl(function(start, dest) {
-      return 'CASTLE MOVE';
-    });
+    BasicMove.mockImpl(function(start, dest) { return 'BASIC MOVE'; });
+    CastleMove.mockImpl(function(start, dest) { return 'CASTLE MOVE'; });
+    PawnJumpMove.mockImpl(function(start, dest) { return 'PAWN JUMP MOVE'; });
   });
 
   function expectMoves(position, moveSet, moveType) {
@@ -38,13 +36,9 @@ describe('movementPredicate', function() {
     ).toEqual(moveSet.sort());
   }
 
-  function expectBasicMoves(position, moveSet) {
-    expectMoves(position, moveSet, 'BASIC MOVE');
-  };
-
-  function expectCastleMoves(position, moveSet) {
-    expectMoves(position, moveSet, 'CASTLE MOVE');
-  };
+  function expectBasicMoves(position, moveSet)    { expectMoves(position, moveSet, 'BASIC MOVE'); };
+  function expectCastleMoves(position, moveSet)   { expectMoves(position, moveSet, 'CASTLE MOVE'); };
+  function expectPawnJumpMoves(position, moveSet) { expectMoves(position, moveSet, 'PAWN JUMP MOVE'); }
 
   function expectToHaveMove(start, end) {
     expect(movementPredicate(start, board)({info: board.info(end), position: end})).toBeTruthy();
@@ -69,10 +63,17 @@ describe('movementPredicate', function() {
       });
 
       it('can move one or two spaces toward the opponent\'s side', function() {
-        expectBasicMoves('b2', ['b3', 'b4']);
-        expectBasicMoves('g7', ['g5', 'g6']);
-        expectBasicMoves('d2', ['d3', 'd4']);
-        expectBasicMoves('e7', ['e5', 'e6']);
+        expectBasicMoves('b2', ['b3']);
+        expectPawnJumpMoves('b2', ['b4']);
+
+        expectBasicMoves('g7', ['g6']);
+        expectPawnJumpMoves('g7', ['g5']);
+
+        expectBasicMoves('d2', ['d3']);
+        expectPawnJumpMoves('d2', ['d4']);
+
+        expectBasicMoves('e7', ['e6']);
+        expectPawnJumpMoves('e7', ['e5']);
       });
 
       describe('that is blocked by other pieces', function() {

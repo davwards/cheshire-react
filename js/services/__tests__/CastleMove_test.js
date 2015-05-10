@@ -30,6 +30,12 @@ describe('CastleMove', function() {
       expect(board.info('g8')).toEqual(_.merge(king, {hasMoved: true}));
       expect(board.isOccupied('h8')).toBeFalsy();
     });
+
+    it('clears the board\'s lastPawnJump', function() {
+      board.lastPawnJump = 'h4';
+      CastleMove('e8', 'g8')(board);
+      expect(board.lastPawnJump).toBeUndefined();
+    });
   });
 
   describe('for a white king-side castle', function() {
@@ -52,6 +58,12 @@ describe('CastleMove', function() {
       expect(board.info('f1')).toEqual(_.merge(rook, {hasMoved: true}));
       expect(board.info('g1')).toEqual(_.merge(king, {hasMoved: true}));
       expect(board.isOccupied('h1')).toBeFalsy();
+    });
+
+    it('clears the board\'s lastPawnJump', function() {
+      board.lastPawnJump = 'h4';
+      CastleMove('e1', 'g1')(board);
+      expect(board.lastPawnJump).toBeUndefined();
     });
   });
 
@@ -77,6 +89,12 @@ describe('CastleMove', function() {
       expect(board.info('c8')).toEqual(_.merge(king, {hasMoved: true}));
       expect(board.isOccupied('b8')).toBeFalsy();
       expect(board.isOccupied('a8')).toBeFalsy();
+    });
+
+    it('clears the board\'s lastPawnJump', function() {
+      board.lastPawnJump = 'h4';
+      CastleMove('e8', 'c8')(board);
+      expect(board.lastPawnJump).toBeUndefined();
     });
   });
 });
