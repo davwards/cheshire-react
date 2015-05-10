@@ -286,10 +286,12 @@ describe('movementPredicate', function() {
 
     describe('that meets the criteria for castling', function() {
       var rook1, rook2;
+
       beforeEach(function() {
         whiteKing.hasMoved = false;
         rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
         rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+
         board.placePiece(whiteKing, 'e1');
         board.placePiece(rook1, 'h1');
         board.placePiece(rook2, 'a1');
@@ -302,10 +304,12 @@ describe('movementPredicate', function() {
 
     describe('that has moved', function() {
       var rook1, rook2;
+
       beforeEach(function() {
         whiteKing.hasMoved = true;
         rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
         rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+
         board.placePiece(whiteKing, 'e1');
         board.placePiece(rook1, 'h1');
         board.placePiece(rook2, 'a1');
