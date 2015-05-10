@@ -22,25 +22,26 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   else
     direction = 1, startingFile = '2', opposingSide = Pieces.sides.BLACK;
 
-  var range = (file == startingFile ? 2 : 1);
-
   return function(candidate) {
     var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
     var fileDistance = utils.getDistance(candidate.position, position).file * direction;
 
-    var enPassantOpportunity = (rankDistance == 1 && fileDistance == 1 &&
-                                candidate.position[0]+position[1] == board.lastPawnJump)
-    var captureOpportunity = (rankDistance == 1 && fileDistance == 1 &&
-                              candidate.info.side == opposingSide);
-    var blocked = board.isOccupied(candidate.position) ||
-                  board.isOccupied(rank + (parseInt(file)+direction));
-    var tooFar = rankDistance != 0 || fileDistance <= 0 || fileDistance > range;
+    var enPassantOpportunity = rankDistance == 1 && fileDistance == 1 &&
+                               candidate.position[0]+position[1] == board.lastPawnJump;
+
+    var captureOpportunity = rankDistance == 1 && fileDistance == 1 &&
+                             candidate.info.side == opposingSide;
+
+    var jumpOpportunity = rankDistance == 0 && fileDistance == 2 && file == startingFile &&
+                          !board.isOccupied(candidate.position) &&
+                          !board.isOccupied(rank + (parseInt(file)+direction));
+
+    var stepOpportunity = rankDistance == 0 && fileDistance == 1 &&
+                          !board.isOccupied(candidate.position);
 
     if(enPassantOpportunity) return EnPassantMove(position, candidate.position);
-    if(captureOpportunity || (!blocked && !tooFar))
-      return fileDistance == 2 ?
-        PawnJumpMove(position, candidate.position) :
-        BasicMove(position, candidate.position);
+    if(jumpOpportunity) return PawnJumpMove(position, candidate.position);
+    if(captureOpportunity || stepOpportunity) return BasicMove(position, candidate.position);
   };
 };
 
