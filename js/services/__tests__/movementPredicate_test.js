@@ -377,5 +377,23 @@ describe('movementPredicate', function() {
         expectCastleMoves('e1', []);
       });
     });
+
+    describe('when castling would require moving through check', function() {
+      var allyRook, enemyRook;
+
+      beforeEach(function() {
+        whiteKing.hasMoved = false;
+        allyRook = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        enemyRook = { piece: Pieces.ROOK, side: Pieces.sides.BLACK, hasMoved: true };
+
+        board.placePiece(whiteKing, 'e1');
+        board.placePiece(allyRook, 'h1');
+        board.placePiece(enemyRook, 'f4');
+      });
+
+      it('cannot castle', function() {
+        expectCastleMoves('e1', []);
+      });
+    });
   });
 });

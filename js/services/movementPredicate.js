@@ -85,7 +85,14 @@ movementPredicates[Pieces.KING] = function king(position, board) {
       Math.abs(distance.rank) != 2 ||
       position[1] != homeFile ||
       king.hasMoved ||
-      _.any(detectThreats(position, board))
+      _.any(detectThreats(position, board)) ||
+      _.chain(board.listSquares())
+        .select(function(square) {
+          return square.position[1] == position[1] &&
+            utils.between(position[0], square.position[0], candidate.position[0]); })
+        .any(function(square) {
+          return detectThreats(square.position, board, king.side).length > 0; })
+        .value()
     ) return false;
 
     var rookPosition = (rankDirection == 1 ? 'a'+homeFile : 'h'+homeFile);

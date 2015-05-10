@@ -50,5 +50,6 @@ function clearHorizontalOrVerticalPath(position1, position2, board) {
 module.exports = {
   getDistance: getDistance,
   clearDiagonalPath: clearDiagonalPath,
-  clearHorizontalOrVerticalPath: clearHorizontalOrVerticalPath
+  clearHorizontalOrVerticalPath: clearHorizontalOrVerticalPath,
+  between: between
 };
