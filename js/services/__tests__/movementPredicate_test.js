@@ -27,22 +27,23 @@ describe('movementPredicate', function() {
     });
   });
 
+  function expectMoves(position, moveSet, moveType) {
+    expect(
+      _.chain(board.listSquares())
+        .select(function(square) {
+          return movementPredicate(position, board)(square) == moveType; })
+        .map(function(square) {
+          return square.position; })
+        .value().sort()
+    ).toEqual(moveSet.sort());
+  }
+
   function expectBasicMoves(position, moveSet) {
-    _.each(board.listSquares(), function(square) {
-      if(_.contains(moveSet, square.position))
-        expect(movementPredicate(position, board)(square)).toEqual('BASIC MOVE');
-      else
-        expect(movementPredicate(position, board)(square)).not.toEqual('BASIC MOVE');
-    });
+    expectMoves(position, moveSet, 'BASIC MOVE');
   };
 
   function expectCastleMoves(position, moveSet) {
-    _.each(board.listSquares(), function(square) {
-      if(_.contains(moveSet, square.position))
-        expect(movementPredicate(position, board)(square)).toEqual('CASTLE MOVE');
-      else
-        expect(movementPredicate(position, board)(square)).not.toEqual('CASTLE MOVE');
-    });
+    expectMoves(position, moveSet, 'CASTLE MOVE');
   };
 
   function expectToHaveMove(start, end) {
