@@ -1,5 +1,6 @@
 jest.autoMockOff();
 
+var _ = require('lodash');
 var BasicMove = require('../BasicMove');
 var BoardModel = require('../../models/Board');
 
@@ -18,12 +19,12 @@ describe('BasicMove', function(){
     expect(board.isOccupied(start)).toBeFalsy();
   });
 
-  it('places the piece at its new location', function(){
+  it('places the piece at its new location, marked as moved', function(){
     var piece = board.info(start);
 
     expect(board.info(destination)).not.toEqual(piece);
     executeMove(board);
-    expect(board.info(destination)).toEqual(piece);
+    expect(board.info(destination)).toEqual(_.merge(piece, {hasMoved: true}));
   });
 
   describe('when start and destination are the same', function() {

@@ -3,5 +3,6 @@ module.exports = function BasicMove(start, end) {
     var piece = board.info(start);
     board.removePiece(start);
     board.placePiece(piece, end);
+    board.setMoved(end);
   };
 };

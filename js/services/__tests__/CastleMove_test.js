@@ -1,5 +1,6 @@
 jest.autoMockOff();
 
+var _ = require('lodash');
 var Pieces = require('../../constants/Pieces');
 var BoardModel = require('../../models/Board');
 var CastleMove = require('../CastleMove');
@@ -16,7 +17,7 @@ describe('CastleMove', function() {
       board.placePiece(rook, 'h8');
     });
 
-    it('moves the king and rook to the correct positions', function(){
+    it('moves the king and rook to the correct positions, marked as moved', function(){
       expect(board.info('e8')).toEqual(king);
       expect(board.isOccupied('f8')).toBeFalsy();
       expect(board.isOccupied('g8')).toBeFalsy();
@@ -25,8 +26,8 @@ describe('CastleMove', function() {
       CastleMove('e8', 'g8')(board);
 
       expect(board.isOccupied('e8')).toBeFalsy();
-      expect(board.info('f8')).toEqual(rook);
-      expect(board.info('g8')).toEqual(king);
+      expect(board.info('f8')).toEqual(_.merge(rook, {hasMoved: true}));
+      expect(board.info('g8')).toEqual(_.merge(king, {hasMoved: true}));
       expect(board.isOccupied('h8')).toBeFalsy();
     });
   });
@@ -48,8 +49,8 @@ describe('CastleMove', function() {
       CastleMove('e1', 'g1')(board);
 
       expect(board.isOccupied('e1')).toBeFalsy();
-      expect(board.info('f1')).toEqual(rook);
-      expect(board.info('g1')).toEqual(king);
+      expect(board.info('f1')).toEqual(_.merge(rook, {hasMoved: true}));
+      expect(board.info('g1')).toEqual(_.merge(king, {hasMoved: true}));
       expect(board.isOccupied('h1')).toBeFalsy();
     });
   });
@@ -72,8 +73,8 @@ describe('CastleMove', function() {
       CastleMove('e8', 'c8')(board);
 
       expect(board.isOccupied('e8')).toBeFalsy();
-      expect(board.info('d8')).toEqual(rook);
-      expect(board.info('c8')).toEqual(king);
+      expect(board.info('d8')).toEqual(_.merge(rook, {hasMoved: true}));
+      expect(board.info('c8')).toEqual(_.merge(king, {hasMoved: true}));
       expect(board.isOccupied('b8')).toBeFalsy();
       expect(board.isOccupied('a8')).toBeFalsy();
     });

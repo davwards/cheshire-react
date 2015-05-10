@@ -24,11 +24,15 @@ Board.prototype.draftMove = function draftMove(position, move){
 
 Board.prototype.select = function select(position) {
   this.clearSelection();
-  setInfo(this, position, 'selected', true)
+  setInfo(this, position, 'selected', true);
 };
 
 Board.prototype.setPossibleMove = function setPossibleMove(position, move) {
-  setInfo(this, position, 'possibleMove', move)
+  setInfo(this, position, 'possibleMove', move);
+};
+
+Board.prototype.setMoved = function setMoved(position) {
+  setInfo(this, position, 'hasMoved', true);
 };
 
 Board.prototype.clearSelection = function clearSelection() {
