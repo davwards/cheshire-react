@@ -3,6 +3,7 @@ jest.autoMockOff();
 jest.mock('../BasicMove');
 jest.mock('../CastleMove');
 jest.mock('../PawnJumpMove');
+jest.mock('../EnPassantMove');
 
 var _ = require('lodash');
 
@@ -11,6 +12,7 @@ var BoardModel = require('../../models/Board');
 var BasicMove = require('../BasicMove');
 var CastleMove = require('../CastleMove');
 var PawnJumpMove = require('../PawnJumpMove');
+var EnPassantMove = require('../EnPassantMove');
 
 var movementPredicate = require('../movementPredicate');
 
@@ -23,6 +25,7 @@ describe('movementPredicate', function() {
     BasicMove.mockImpl(function(start, dest) { return 'BASIC MOVE'; });
     CastleMove.mockImpl(function(start, dest) { return 'CASTLE MOVE'; });
     PawnJumpMove.mockImpl(function(start, dest) { return 'PAWN JUMP MOVE'; });
+    EnPassantMove.mockImpl(function(start, dest) { return 'EN PASSANT MOVE'; });
   });
 
   function expectMoves(position, moveSet, moveType) {
@@ -39,6 +42,7 @@ describe('movementPredicate', function() {
   function expectBasicMoves(position, moveSet)    { expectMoves(position, moveSet, 'BASIC MOVE'); };
   function expectCastleMoves(position, moveSet)   { expectMoves(position, moveSet, 'CASTLE MOVE'); };
   function expectPawnJumpMoves(position, moveSet) { expectMoves(position, moveSet, 'PAWN JUMP MOVE'); }
+  function expectEnPassantMoves(position, moveSet) { expectMoves(position, moveSet, 'EN PASSANT MOVE'); }
 
   function expectToHaveMove(start, end) {
     expect(movementPredicate(start, board)({info: board.info(end), position: end})).toBeTruthy();
@@ -119,6 +123,18 @@ describe('movementPredicate', function() {
 
       it('can move to capture enemy pieces', function() {
         expectBasicMoves('e5', ['d4', 'f4']);
+      });
+    });
+
+    describe('with an en passant opportunity', function() {
+      beforeEach(function(){
+        board.lastPawnJump = 'e4';
+        board.placePiece(blackPawn1, 'd4');
+        board.placePiece(whitePawn1, 'e4');
+      });
+
+      it('can capture en passant', function() {
+        expectEnPassantMoves('d4', ['e3']);
       });
     });
   });

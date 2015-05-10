@@ -11,6 +11,7 @@ var detectThreats = require('./detectThreats');
 var BasicMove = require('./BasicMove');
 var CastleMove = require('./CastleMove');
 var PawnJumpMove = require('./PawnJumpMove');
+var EnPassantMove = require('./EnPassantMove');
 
 movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   var rank = position[0], file = position[1];
@@ -27,12 +28,15 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
     var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
     var fileDistance = utils.getDistance(candidate.position, position).file * direction;
 
+    var enPassantOpportunity = (rankDistance == 1 && fileDistance == 1 &&
+                                candidate.position[0]+position[1] == board.lastPawnJump)
     var captureOpportunity = (rankDistance == 1 && fileDistance == 1 &&
                               candidate.info.side == opposingSide);
     var blocked = board.isOccupied(candidate.position) ||
                   board.isOccupied(rank + (parseInt(file)+direction));
     var tooFar = rankDistance != 0 || fileDistance <= 0 || fileDistance > range;
 
+    if(enPassantOpportunity) return EnPassantMove(position, candidate.position);
     if(captureOpportunity || (!blocked && !tooFar))
       return fileDistance == 2 ?
         PawnJumpMove(position, candidate.position) :
