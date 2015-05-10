@@ -1,10 +1,15 @@
+var movementPredicates = {};
+
+module.exports = function movementPredicate(position, board) {
+  return movementPredicates[board.info(position).piece](position, board);
+};
+
 var _ = require('lodash');
 var utils = require('./MovementUtils');
 var Pieces = require('../constants/Pieces');
+var detectThreats = require('./detectThreats');
 var BasicMove = require('./BasicMove');
 var CastleMove = require('./CastleMove');
-
-var movementPredicates = {};
 
 movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   var rank = position[0], file = position[1];
@@ -104,6 +109,3 @@ function linePiece(position, board, findClearPath) {
   };
 }
 
-module.exports = function movementPredicate(position, board) {
-  return movementPredicates[board.info(position).piece](position, board);
-};
