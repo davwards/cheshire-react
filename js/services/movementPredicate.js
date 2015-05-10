@@ -80,17 +80,23 @@ movementPredicates[Pieces.KING] = function king(position, board) {
     var distance = utils.getDistance(position, candidate.position);
     var rankDirection = distance.rank / Math.abs(distance.rank);
 
-    if(Math.abs(distance.file) != 0 ||
-       Math.abs(distance.rank) != 2 ||
-       position[1] != homeFile ||
-       king.hasMoved)
-      return false;
+    if(
+      Math.abs(distance.file) != 0 ||
+      Math.abs(distance.rank) != 2 ||
+      position[1] != homeFile ||
+      king.hasMoved ||
+      _.any(detectThreats(position, board))
+    ) return false;
 
     var rookPosition = (rankDirection == 1 ? 'a'+homeFile : 'h'+homeFile);
     var rookSpace = board.info(rookPosition);
 
-    if(!rookSpace.hasMoved && rookSpace.piece == Pieces.ROOK && rookSpace.side == king.side)
-      return CastleMove(position, candidate.position);
+    if(
+      !rookSpace.hasMoved &&
+      rookSpace.piece == Pieces.ROOK &&
+      rookSpace.side == king.side &&
+      utils.clearHorizontalOrVerticalPath(position, rookPosition, board)
+    ) return CastleMove(position, candidate.position);
   };
 
   return function(candidate) {

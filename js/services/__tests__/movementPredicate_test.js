@@ -322,19 +322,60 @@ describe('movementPredicate', function() {
 
     describe('with a rook that has moved', function() {
       var rook1, rook2;
+
       beforeEach(function() {
         whiteKing.hasMoved = false;
         rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: true };
         rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+
         board.placePiece(whiteKing, 'e1');
         board.placePiece(rook1, 'h1');
         board.placePiece(rook2, 'a1');
       });
 
-      it.only('cannot castle', function() {
+      it('cannot castle', function() {
         expectCastleMoves('e1', ['c1']);
+      });
+    });
+
+    describe('that is in check', function() {
+      var allyRook, enemyRook;
+
+      beforeEach(function() {
+        whiteKing.hasMoved = false;
+        allyRook = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        enemyRook = { piece: Pieces.ROOK, side: Pieces.sides.BLACK, hasMoved: true };
+
+        board.placePiece(whiteKing, 'e1');
+        board.placePiece(allyRook, 'h1');
+        board.placePiece(enemyRook, 'e4');
+      });
+
+      it('cannot castle', function() {
+        expectCastleMoves('e1', []);
+      });
+    });
+
+    describe('that has another piece between itself and the rook', function() {
+      var rook1, rook2, alliedBlocker, enemyBlocker;
+
+      beforeEach(function() {
+        whiteKing.hasMoved = false;
+        rook1 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        rook2 = { piece: Pieces.ROOK, side: Pieces.sides.WHITE, hasMoved: false };
+        alliedBlocker = { piece: Pieces.BISHOP, side: Pieces.sides.WHITE, hasMoved: false };
+        enemyBlocker = { piece: Pieces.BISHOP, side: Pieces.sides.BLACK, hasMoved: false };
+
+        board.placePiece(whiteKing, 'e1');
+        board.placePiece(rook1, 'h1');
+        board.placePiece(rook2, 'a1');
+        board.placePiece(alliedBlocker, 'f1');
+        board.placePiece(enemyBlocker, 'b1');
+      });
+
+      it('cannot castle', function() {
+        expectCastleMoves('e1', []);
       });
     });
   });
 });
-
