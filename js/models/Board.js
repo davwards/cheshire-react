@@ -35,6 +35,14 @@ Board.prototype.setMoved = function setMoved(position) {
   setInfo(this, position, 'hasMoved', true);
 };
 
+Board.prototype.promotingPawn = function promotingPawn() {
+  return this._promotingPawn;
+};
+
+Board.prototype.setPromotingPawn = function setPromotingPawn(position) {
+  this._promotingPawn = position;
+};
+
 Board.prototype.clearSelection = function clearSelection() {
   var board = this;
   _.each(board.listSquares(), function(square) {
