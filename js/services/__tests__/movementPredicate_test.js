@@ -128,7 +128,7 @@ describe('movementPredicate', function() {
 
     describe('with an en passant opportunity', function() {
       beforeEach(function(){
-        board.lastPawnJump = 'e4';
+        board.setLastPawnJump('e4');
         board.placePiece(blackPawn1, 'd4');
         board.placePiece(whitePawn1, 'e4');
       });

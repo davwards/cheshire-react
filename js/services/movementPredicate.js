@@ -27,7 +27,7 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
     var fileDistance = utils.getDistance(candidate.position, position).file * direction;
 
     var enPassantOpportunity = rankDistance == 1 && fileDistance == 1 &&
-                               candidate.position[0]+position[1] == board.lastPawnJump;
+                               candidate.position[0]+position[1] == board.lastPawnJump();
 
     var captureOpportunity = rankDistance == 1 && fileDistance == 1 &&
                              candidate.info.side == opposingSide;
