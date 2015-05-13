@@ -12,19 +12,24 @@ var BasicMove = require('./BasicMove');
 var CastleMove = require('./CastleMove');
 var PawnJumpMove = require('./PawnJumpMove');
 var EnPassantMove = require('./EnPassantMove');
+var PawnPromotionMove = require('./PawnPromotionMove');
 
 movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   var rank = position[0], file = position[1];
-  var direction, startingFile, opposingSide;
+  var direction, startingFile, promotionFile, opposingSide;
 
   if(board.info(position).side == Pieces.sides.BLACK)
-    direction = -1, startingFile = '7', opposingSide = Pieces.sides.WHITE;
+    direction = -1, startingFile = '7', promotionFile = '1', opposingSide = Pieces.sides.WHITE;
   else
-    direction = 1, startingFile = '2', opposingSide = Pieces.sides.BLACK;
+    direction = 1, startingFile = '2', promotionFile = '8', opposingSide = Pieces.sides.BLACK;
 
   return function(candidate) {
     var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
     var fileDistance = utils.getDistance(candidate.position, position).file * direction;
+
+    var promotionOpportunity = rankDistance == 0 && fileDistance == 1 &&
+                               candidate.position[1] == promotionFile &&
+                               !board.isOccupied(candidate.position);
 
     var enPassantOpportunity = rankDistance == 1 && fileDistance == 1 &&
                                candidate.position[0]+position[1] == board.lastPawnJump();
@@ -39,6 +44,7 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
     var stepOpportunity = rankDistance == 0 && fileDistance == 1 &&
                           !board.isOccupied(candidate.position);
 
+    if(promotionOpportunity) return PawnPromotionMove(position, candidate.position);
     if(enPassantOpportunity) return EnPassantMove(position, candidate.position);
     if(jumpOpportunity) return PawnJumpMove(position, candidate.position);
     if(captureOpportunity || stepOpportunity) return BasicMove(position, candidate.position);

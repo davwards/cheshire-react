@@ -4,6 +4,7 @@ jest.mock('../BasicMove');
 jest.mock('../CastleMove');
 jest.mock('../PawnJumpMove');
 jest.mock('../EnPassantMove');
+jest.mock('../PawnPromotionMove');
 
 var _ = require('lodash');
 
@@ -13,6 +14,7 @@ var BasicMove = require('../BasicMove');
 var CastleMove = require('../CastleMove');
 var PawnJumpMove = require('../PawnJumpMove');
 var EnPassantMove = require('../EnPassantMove');
+var PawnPromotionMove = require('../PawnPromotionMove');
 
 var movementPredicate = require('../movementPredicate');
 
@@ -26,6 +28,7 @@ describe('movementPredicate', function() {
     CastleMove.mockImpl(function(start, dest) { return 'CASTLE MOVE'; });
     PawnJumpMove.mockImpl(function(start, dest) { return 'PAWN JUMP MOVE'; });
     EnPassantMove.mockImpl(function(start, dest) { return 'EN PASSANT MOVE'; });
+    PawnPromotionMove.mockImpl(function(start, dest) { return 'PAWN PROMOTION MOVE'; });
   });
 
   function expectMoves(position, moveSet, moveType) {
@@ -43,6 +46,7 @@ describe('movementPredicate', function() {
   function expectCastleMoves(position, moveSet)   { expectMoves(position, moveSet, 'CASTLE MOVE'); };
   function expectPawnJumpMoves(position, moveSet) { expectMoves(position, moveSet, 'PAWN JUMP MOVE'); }
   function expectEnPassantMoves(position, moveSet) { expectMoves(position, moveSet, 'EN PASSANT MOVE'); }
+  function expectPawnPromotionMoves(position, moveSet) { expectMoves(position, moveSet, 'PAWN PROMOTION MOVE'); }
 
   function expectToHaveMove(start, end) {
     expect(movementPredicate(start, board)({info: board.info(end), position: end})).toBeTruthy();
@@ -135,6 +139,33 @@ describe('movementPredicate', function() {
 
       it('can capture en passant', function() {
         expectEnPassantMoves('d4', ['e3']);
+      });
+    });
+
+    describe('with an opportunity to promote', function() {
+      beforeEach(function(){
+        board.placePiece(blackPawn1, 'd2');
+        board.placePiece(whitePawn1, 'e7');
+
+        board.placePiece(blackPawn2, 'h2');
+        board.placePiece(whitePawn2, 'h7');
+        board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.WHITE}, 'h1');
+        board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'h8');
+      });
+
+      it('can promote', function() {
+        expectPawnPromotionMoves('d2', ['d1']);
+        expectPawnPromotionMoves('e7', ['e8']);
+      });
+
+      it('does not consider the moves to be BasicMoves', function() {
+        expectBasicMoves('d2', []);
+        expectBasicMoves('e7', []);
+      });
+
+      it('cannot promote when blocked', function() {
+        expectPawnPromotionMoves('h2', []);
+        expectPawnPromotionMoves('h7', []);
       });
     });
   });
