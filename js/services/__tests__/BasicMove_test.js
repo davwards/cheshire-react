@@ -28,9 +28,9 @@ describe('BasicMove', function(){
   });
 
   it('clears the board\'s lastPawnJump', function() {
-    board.lastPawnJump = 'h4';
+    board.setLastPawnJump('h4');
     executeMove(board);
-    expect(board.lastPawnJump).toBeUndefined();
+    expect(board.lastPawnJump()).toBeUndefined();
   });
 
   describe('when start and destination are the same', function() {

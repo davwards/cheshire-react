@@ -4,6 +4,6 @@ module.exports = function BasicMove(start, end) {
     board.removePiece(start);
     board.placePiece(piece, end);
     board.setMoved(end);
-    board.lastPawnJump = undefined;
+    board.setLastPawnJump(undefined);
   };
 };

@@ -17,7 +17,7 @@ describe('EnPassantMove', function(){
 
     board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.BLACK }, start);
     board.placePiece({ piece: Pieces.PAWN, side: Pieces.sides.WHITE }, capturePosition);
-    board.lastPawnJump = 'e4';
+    board.setLastPawnJump('e4');
 
     executeMove = EnPassantMove(start, end);
   });
@@ -37,9 +37,9 @@ describe('EnPassantMove', function(){
   });
 
   it('clears the board\'s lastPawnJump', function() {
-    board.lastPawnJump = 'h4';
+    expect(board.lastPawnJump()).toEqual('e4');
     executeMove(board);
-    expect(board.lastPawnJump).toBeUndefined();
+    expect(board.lastPawnJump()).toBeUndefined();
   });
 });
 

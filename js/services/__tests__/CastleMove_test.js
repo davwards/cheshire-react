@@ -32,9 +32,9 @@ describe('CastleMove', function() {
     });
 
     it('clears the board\'s lastPawnJump', function() {
-      board.lastPawnJump = 'h4';
+      board.setLastPawnJump('h4');
       CastleMove('e8', 'g8')(board);
-      expect(board.lastPawnJump).toBeUndefined();
+      expect(board.lastPawnJump()).toBeUndefined();
     });
   });
 
@@ -61,9 +61,9 @@ describe('CastleMove', function() {
     });
 
     it('clears the board\'s lastPawnJump', function() {
-      board.lastPawnJump = 'h4';
+      board.setLastPawnJump('h4');
       CastleMove('e1', 'g1')(board);
-      expect(board.lastPawnJump).toBeUndefined();
+      expect(board.lastPawnJump()).toBeUndefined();
     });
   });
 
@@ -92,9 +92,9 @@ describe('CastleMove', function() {
     });
 
     it('clears the board\'s lastPawnJump', function() {
-      board.lastPawnJump = 'h4';
+      board.setLastPawnJump('h4');
       CastleMove('e8', 'c8')(board);
-      expect(board.lastPawnJump).toBeUndefined();
+      expect(board.lastPawnJump()).toBeUndefined();
     });
   });
 });

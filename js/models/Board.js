@@ -35,6 +35,14 @@ Board.prototype.setMoved = function setMoved(position) {
   setInfo(this, position, 'hasMoved', true);
 };
 
+Board.prototype.lastPawnJump = function lastPawnJump() {
+  return this._lastPawnJump;
+};
+
+Board.prototype.setLastPawnJump = function setLastPawnJump(position) {
+  this._lastPawnJump = position;
+};
+
 Board.prototype.promotingPawn = function promotingPawn() {
   return this._promotingPawn;
 };

@@ -21,10 +21,10 @@ describe('PawnJumpMove', function(){
     expect(board.isOccupied(end)).toBeTruthy();
   });
 
-  it('sets the lastPawnJump on the board', function(){
-    expect(board.lastPawnJump).toBeUndefined();
+  it.only('sets the lastPawnJump on the board', function(){
+    expect(board.lastPawnJump()).toBeUndefined();
     executeMove(board);
-    expect(board.lastPawnJump).toEqual(end);
+    expect(board.lastPawnJump()).toEqual(end);
   });
 });
 

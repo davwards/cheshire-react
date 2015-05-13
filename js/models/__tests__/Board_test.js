@@ -24,7 +24,7 @@ describe('Board model', function() {
     });
 
     it('has the lastPawnJump blank', function() {
-      expect(board.lastPawnJump).toBeUndefined();
+      expect(board.lastPawnJump()).toBeUndefined();
     });
 
     it('has the promotingPawn blank', function() {
