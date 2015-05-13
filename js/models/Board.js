@@ -53,6 +53,10 @@ Board.prototype.setPromotingPawn = function setPromotingPawn(position) {
   this._promotingPawn = position;
 };
 
+Board.prototype.promotePawn = function promotePawn(position, newType) {
+  setInfo(this, position, 'piece', newType);
+};
+
 Board.prototype.clearSelection = function clearSelection() {
   var board = this;
   _.each(board.listSquares(), function(square) {

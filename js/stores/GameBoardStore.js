@@ -55,6 +55,10 @@ AppDispatcher.register(function(action) {
       setSelected(action.rank, action.file);
       break;
 
+    case Actions.PROMOTE_PAWN:
+      _board.promotePawn(action.position, action.newType);
+      break;
+
     default:
       return;
   }

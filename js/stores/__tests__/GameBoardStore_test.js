@@ -261,4 +261,18 @@ describe('GameBoardStore', function() {
       });
     });
   });
+
+  describe('when given a PROMOTE_PAWN action', function() {
+    it('promotes the piece at the given position to the given type', function() {
+      expect(GameBoardStore.getBoardState()['2']['a'].piece).toEqual(Pieces.PAWN);
+
+      handleAction({
+        actionType: Actions.PROMOTE_PAWN,
+        position: 'a2',
+        newType: Pieces.QUEEN
+      });
+
+      expect(GameBoardStore.getBoardState()['2']['a'].piece).toEqual(Pieces.QUEEN);
+    });
+  });
 });

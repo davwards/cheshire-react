@@ -133,6 +133,21 @@ describe('Board model', function() {
     });
   });
 
+  describe('promotePawn', function() {
+    var board;
+    beforeEach(function() {
+      board = new BoardModel();
+      board.clearBoard();
+      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'h1');
+    });
+
+    it('changes the type of the specified pawn to the specified type', function() {
+      expect(board.info('h1')).toEqual({piece: Pieces.PAWN, side: Pieces.sides.BLACK});
+      board.promotePawn('h1', Pieces.QUEEN);
+      expect(board.info('h1')).toEqual({piece: Pieces.QUEEN, side: Pieces.sides.BLACK});
+    });
+  });
+
   describe('listSquares', function() {
     var board;
     beforeEach(function() { board = new BoardModel(); });
