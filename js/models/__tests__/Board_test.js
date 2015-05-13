@@ -54,6 +54,18 @@ describe('Board model', function() {
       board.select(selectedPosition);
       expect(board.info(previousSelection).selected).toBeFalsy();
     });
+
+    describe('when a pawn is being promoted', function() {
+      beforeEach(function() {
+        board.setPromotingPawn('h8');
+      });
+
+      it('disallows selection', function() {
+        expect(board.info(selectedPosition).selected).toBeFalsy();
+        board.select(selectedPosition);
+        expect(board.info(selectedPosition).selected).toBeFalsy();
+      });
+    });
   });
 
   describe('clearSelection', function() {
