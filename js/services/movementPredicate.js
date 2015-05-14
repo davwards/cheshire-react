@@ -27,22 +27,22 @@ movementPredicates[Pieces.PAWN] = function pawn(position, board) {
     var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
     var fileDistance = utils.getDistance(candidate.position, position).file * direction;
 
-    var promotionOpportunity = rankDistance == 0 && fileDistance == 1 &&
-                               candidate.position[1] == promotionFile &&
-                               !board.isOccupied(candidate.position);
-
     var enPassantOpportunity = rankDistance == 1 && fileDistance == 1 &&
                                candidate.position[0]+position[1] == board.lastPawnJump();
-
-    var captureOpportunity = rankDistance == 1 && fileDistance == 1 &&
-                             candidate.info.side == opposingSide;
 
     var jumpOpportunity = rankDistance == 0 && fileDistance == 2 && file == startingFile &&
                           !board.isOccupied(candidate.position) &&
                           !board.isOccupied(rank + (parseInt(file)+direction));
 
+    var captureOpportunity = rankDistance == 1 && fileDistance == 1 &&
+                             candidate.info.side == opposingSide;
+
     var stepOpportunity = rankDistance == 0 && fileDistance == 1 &&
                           !board.isOccupied(candidate.position);
+
+    var promotionOpportunity = (captureOpportunity || stepOpportunity) &&
+                               candidate.position[1] == promotionFile;
+
 
     if(promotionOpportunity) return PawnPromotionMove(position, candidate.position);
     if(enPassantOpportunity) return EnPassantMove(position, candidate.position);

@@ -150,7 +150,7 @@ describe('movementPredicate', function() {
         board.placePiece(blackPawn2, 'h2');
         board.placePiece(whitePawn2, 'h7');
         board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.WHITE}, 'h1');
-        board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'h8');
+        board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'g8');
       });
 
       it('can promote', function() {
@@ -165,7 +165,10 @@ describe('movementPredicate', function() {
 
       it('cannot promote when blocked', function() {
         expectPawnPromotionMoves('h2', []);
-        expectPawnPromotionMoves('h7', []);
+      });
+
+      it('can promote while capturing', function() {
+        expectPawnPromotionMoves('h7', ['h8', 'g8']);
       });
     });
   });
