@@ -1,0 +1,22 @@
+.promote-pawn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -300px;
+  width: 600px;
+  height: 200px;
+  background: white;
+  border: solid black 5px;
+
+  .promotions li {
+    list-style-type: none;
+    display: inline-block;
+
+    button {
+      background: none;
+      font-size: 108px;
+      border: none;
+    }
+  }
+}

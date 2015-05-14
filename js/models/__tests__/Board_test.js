@@ -146,6 +146,14 @@ describe('Board model', function() {
       board.promotePawn('h1', Pieces.QUEEN);
       expect(board.info('h1')).toEqual({piece: Pieces.QUEEN, side: Pieces.sides.BLACK});
     });
+
+    it('clears the promotingPawn', function() {
+      board.setPromotingPawn('a2');
+
+      expect(board.promotingPawn()).toEqual('a2');
+      board.promotePawn('a2', Pieces.QUEEN);
+      expect(board.promotingPawn()).toBeFalsy();
+    });
   });
 
   describe('listSquares', function() {

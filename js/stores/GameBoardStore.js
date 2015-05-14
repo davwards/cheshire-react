@@ -36,7 +36,7 @@ function setSelected(rank, file) {
 
 var GameBoardStore = assign({}, EventEmitter.prototype, {
   getBoardState: function() {
-    return _board.positions;
+    return _.merge(_.clone(_board.positions), {promotingPawn: _board.promotingPawn()});
   },
   emitChange: function() {
     this.emit(Events.CHANGE);

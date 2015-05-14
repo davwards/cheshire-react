@@ -55,6 +55,7 @@ Board.prototype.setPromotingPawn = function setPromotingPawn(position) {
 
 Board.prototype.promotePawn = function promotePawn(position, newType) {
   setInfo(this, position, 'piece', newType);
+  this.setPromotingPawn(undefined);
 };
 
 Board.prototype.clearSelection = function clearSelection() {

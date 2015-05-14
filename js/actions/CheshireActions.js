@@ -9,6 +9,14 @@ var CheshireActions = {
       file: file
     });
   },
+
+  promotePawn: function(position, newType) {
+    AppDispatcher.dispatch({
+      actionType: Actions.PROMOTE_PAWN,
+      position: position,
+      newType: newType
+    });
+  },
 };
 
 module.exports = CheshireActions;
