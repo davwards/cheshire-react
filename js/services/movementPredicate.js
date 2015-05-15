@@ -55,10 +55,9 @@ movementPredicates[Pieces.KNIGHT] = function knight(position, board) {
   return function(candidate) {
     if(board.info(position).side == candidate.info.side) return false;
 
-    var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
-    var fileDistance = Math.abs(utils.getDistance(candidate.position, position).file);
+    var distance = utils.getDistance(candidate.position, position);
 
-    if((rankDistance == 2 && fileDistance == 1) || (rankDistance == 1 && fileDistance == 2))
+    if(Math.abs(distance.rank * distance.file) == 2)
       return BasicMove(position, candidate.position);
   }
 };
