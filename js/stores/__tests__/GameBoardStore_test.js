@@ -43,20 +43,28 @@ describe('GameBoardStore', function() {
 
         it('highlights the selected piece\'s possible moves', function() {
           PossibleMoves.mockReturnValue({
+            a1: undefined,
+            a2: undefined,
             g4: 'MOVE TO g4',
             c3: 'MOVE TO c3'
           });
 
-          expect(GameBoardStore.getBoardState()['g4'].possibleMove).toBeFalsy();
-          expect(GameBoardStore.getBoardState()['c3'].possibleMove).toBeFalsy();
+          expect(Object.keys(
+            _.pick(GameBoardStore.getBoardState(), function(square) {
+              return square && square.possibleMove;
+            })
+          )).toEqual([]);
 
           handleAction({
             actionType: Actions.SELECT_SQUARE,
             position: selectedPosition
           });
 
-          expect(GameBoardStore.getBoardState()['g4'].possibleMove).toEqual('MOVE TO g4');
-          expect(GameBoardStore.getBoardState()['c3'].possibleMove).toEqual('MOVE TO c3');
+          expect(Object.keys(
+            _.pick(GameBoardStore.getBoardState(), function(square) {
+              return square && square.possibleMove;
+            })
+          ).sort()).toEqual(['c3', 'g4']);
         });
       });
 
@@ -90,15 +98,14 @@ describe('GameBoardStore', function() {
         possibleMoveFunction = jest.genMockFunction();
         PossibleMoves.mockReturnValue({ a3: possibleMoveFunction });
 
-        movedPiece = GameBoardStore.getBoardState()[sourcePosition];
-        expect(movedPiece.piece).toBeTruthy();
+        expect(GameBoardStore.getBoardState()[sourcePosition].piece).toBeTruthy();
 
         handleAction({
           actionType: Actions.SELECT_SQUARE,
           position: sourcePosition
         });
 
-        expect(movedPiece.selected).toBeTruthy();
+        expect(GameBoardStore.getBoardState()[sourcePosition].selected).toBeTruthy();
       });
 
       describe('and the target square is a possible move', function() {
@@ -120,7 +127,7 @@ describe('GameBoardStore', function() {
 
         it('clears the selected status on the new and previous selections', function() {
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.selected;
+            return square && square.selected;
           })).toBeTruthy();
 
           handleAction({
@@ -129,13 +136,13 @@ describe('GameBoardStore', function() {
           });
 
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.selected;
+            return square && square.selected;
           })).toBeFalsy();
         });
 
         it('clears any highlighted possible moves', function() {
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.possibleMove;
+            return square && square.possibleMove;
           })).toBeTruthy();
 
           handleAction({
@@ -144,7 +151,7 @@ describe('GameBoardStore', function() {
           });
 
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.possibleMove;
+            return square && square.possibleMove;
           })).toBeFalsy();
         });
       });
@@ -155,19 +162,9 @@ describe('GameBoardStore', function() {
           expect(GameBoardStore.getBoardState()[selectedPosition].possibleMove).toBeFalsy();
         });
 
-        it('does not move the previously selected piece to the new square, replacing the current occupant', function(){
-          handleAction({
-            actionType: Actions.SELECT_SQUARE,
-            position: selectedPosition
-          });
-
-          expect(GameBoardStore.getBoardState()[sourcePosition]).toEqual(movedPiece);
-          expect(GameBoardStore.getBoardState()[selectedPosition]).not.toEqual(movedPiece);
-        });
-
         it('clears the selected status on the new and previous selections', function() {
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.selected;
+            return square && square.selected;
           })).toBeTruthy();
 
           handleAction({
@@ -176,13 +173,13 @@ describe('GameBoardStore', function() {
           });
 
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.selected;
+            return square && square.selected;
           })).toBeFalsy();
         });
 
         it('clears any highlighted possible moves', function() {
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.possibleMove;
+            return square && square.possibleMove;
           })).toBeTruthy();
 
           handleAction({
@@ -191,7 +188,7 @@ describe('GameBoardStore', function() {
           });
 
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
-            return square.possibleMove;
+            return square && square.possibleMove;
           })).toBeFalsy();
         });
       });

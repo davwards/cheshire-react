@@ -14,29 +14,37 @@ var Events = require('../constants/Events');
 
 _board = new BoardModel();
 
-var _selectedSquare;
+var _currentSelection;
+var _possibleMoves = {};
 
 function setSelected(position) {
-  if(_selectedSquare) {
-    if(_board.info(position).possibleMove) {
-      _board.info(position).possibleMove(_board);
-    }
+  if(_currentSelection) {
+    if(_possibleMoves[position])
+      _possibleMoves[position](_board);
 
-    _board.clearSelection();
-    _selectedSquare = null;
+    _currentSelection = null;
+    _possibleMoves = {};
   }
   else if(_board.isOccupied(position)) {
-    _board.select(position);
-    _selectedSquare = position;
-    _.each(PossibleMoves(_board, position), function(possibleMove, destination){
-      _board.setPossibleMove(destination, possibleMove);
-    });
+    _currentSelection = position;
+    _possibleMoves = PossibleMoves(_board, position);
   }
 }
 
 var GameBoardStore = assign({}, EventEmitter.prototype, {
   getBoardState: function() {
-    return _.merge(_.clone(_board.positions), {promotingPawn: _board.promotingPawn()});
+    var state = _.tap(_.clone(_board.positions, true), function(b) {
+      b.promotingPawn = _board.promotingPawn();
+
+      if(_currentSelection)
+        b[_currentSelection].selected = true;
+
+      _.each(_possibleMoves, function(move, position) {
+        b[position].possibleMove = !!move;
+      });
+    });
+
+    return state;
   },
   emitChange: function() {
     this.emit(Events.CHANGE);
