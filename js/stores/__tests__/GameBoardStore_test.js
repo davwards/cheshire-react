@@ -193,52 +193,6 @@ describe('GameBoardStore', function() {
         });
       });
     });
-
-    describe('Scenario: a sequence of moves', function() {
-      beforeEach(function(){
-        PossibleMoves = require('../../services/PossibleMoves');
-        PossibleMoves.mockImplementation(function(board, position){
-          if(position == 'd2') {
-            return {d3: BasicMove('d2', 'd3')};
-          }
-          if(position == 'd7') {
-            return {d6: BasicMove('d7', 'd6')};
-          }
-        });
-      });
-
-      it('results in having pieces at the right destination', function() {
-        // Select white pawn
-        handleAction({
-          actionType: Actions.SELECT_SQUARE,
-          position: 'd2'
-        });
-        // Move white pawn forward
-        handleAction({
-          actionType: Actions.SELECT_SQUARE,
-          position: 'd3'
-        });
-
-        // Select black pawn
-        handleAction({
-          actionType: Actions.SELECT_SQUARE,
-          position: 'd7'
-        });
-        // Move black pawn forward
-        handleAction({
-          actionType: Actions.SELECT_SQUARE,
-          position: 'd6'
-        });
-
-        expect(GameBoardStore.getBoardState()['d2'].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()['d3'].piece).toEqual(Pieces.PAWN);
-        expect(GameBoardStore.getBoardState()['d3'].side).toEqual(Pieces.sides.WHITE);
-
-        expect(GameBoardStore.getBoardState()['d7'].piece).toBeFalsy();
-        expect(GameBoardStore.getBoardState()['d6'].piece).toEqual(Pieces.PAWN);
-        expect(GameBoardStore.getBoardState()['d6'].side).toEqual(Pieces.sides.BLACK);
-      });
-    });
   });
 
   describe('when given a PROMOTE_PAWN action', function() {
