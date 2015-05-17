@@ -12,7 +12,7 @@ var Board = React.createClass({
         { _.map('12345678', function(file) { return (
           <tr key={'file-' + file}>
             { _.map('abcdefgh', function(rank) { return (
-              <Square key={rank+file} state={board[file][rank]} rank={rank} file={file}/>
+              <Square key={rank+file} state={board[rank+file]} position={rank+file}/>
             ) }) }
           </tr>);
         }) }

@@ -16,19 +16,19 @@ _board = new BoardModel();
 
 var _selectedSquare;
 
-function setSelected(rank, file) {
+function setSelected(position) {
   if(_selectedSquare) {
-    if(_board.info(rank+file).possibleMove) {
-      _board.info(rank+file).possibleMove(_board);
+    if(_board.info(position).possibleMove) {
+      _board.info(position).possibleMove(_board);
     }
 
     _board.clearSelection();
     _selectedSquare = null;
   }
-  else if(_board.isOccupied(rank+file)) {
-    _board.select(rank+file);
-    _selectedSquare = rank + file;
-    _.each(PossibleMoves(_board, rank+file), function(possibleMove, destination){
+  else if(_board.isOccupied(position)) {
+    _board.select(position);
+    _selectedSquare = position;
+    _.each(PossibleMoves(_board, position), function(possibleMove, destination){
       _board.setPossibleMove(destination, possibleMove);
     });
   }
@@ -52,7 +52,7 @@ var GameBoardStore = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case Actions.SELECT_SQUARE:
-      setSelected(action.rank, action.file);
+      setSelected(action.position);
       break;
 
     case Actions.PROMOTE_PAWN:

@@ -2,11 +2,10 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var Actions = require('../constants/Actions');
 
 var CheshireActions = {
-  selectSquare: function(rank, file) {
+  selectSquare: function(position) {
     AppDispatcher.dispatch({
       actionType: Actions.SELECT_SQUARE,
-      rank: rank,
-      file: file
+      position: position
     });
   },
 
