@@ -17,75 +17,12 @@ describe('Board model', function() {
       })).toEqual([]);
     });
 
-    it('has all the positions marked as unselected', function() {
-      expect(board.filterSquares(function(square) {
-        return square.info.selected;
-      })).toEqual([]);
-    });
-
     it('has the lastPawnJump blank', function() {
       expect(board.lastPawnJump()).toBeUndefined();
     });
 
     it('has the promotingPawn blank', function() {
       expect(board.promotingPawn()).toBeUndefined();
-    });
-  });
-
-  describe('setting selection', function() {
-    var board, selectedPosition;
-    beforeEach(function(){
-      board = new BoardModel();
-      selectedPosition = 'a1';
-    });
-
-    it('sets the given position as selected', function() {
-      expect(board.info(selectedPosition).selected).toBeFalsy();
-      board.select(selectedPosition);
-      expect(board.info(selectedPosition).selected).toBeTruthy();
-    });
-
-    it('clears the previous selection', function() {
-      var previousSelection = 'h8';
-      expect(previousSelection).not.toEqual(selectedPosition);
-      board.select(previousSelection);
-
-      expect(board.info(previousSelection).selected).toBeTruthy();
-      board.select(selectedPosition);
-      expect(board.info(previousSelection).selected).toBeFalsy();
-    });
-
-    describe('when a pawn is being promoted', function() {
-      beforeEach(function() {
-        board.setPromotingPawn('h8');
-      });
-
-      it('disallows selection', function() {
-        expect(board.info(selectedPosition).selected).toBeFalsy();
-        board.select(selectedPosition);
-        expect(board.info(selectedPosition).selected).toBeFalsy();
-      });
-    });
-  });
-
-  describe('clearSelection', function() {
-    var board;
-    beforeEach(function() { board = new BoardModel(); });
-
-    it('unmarks any selected and possible move squares', function() {
-      board.select('a4');
-      board.setPossibleMove('c1');
-      board.setPossibleMove('d8');
-
-      expect(board.filterSquares(function(square) {
-        return square.info.selected || square.info.possibleMove;
-      })).not.toEqual([]);
-
-      board.clearSelection();
-
-      expect(board.filterSquares(function(square) {
-        return square.info.selected || square.info.possibleMove;
-      })).toEqual([]);
     });
   });
 

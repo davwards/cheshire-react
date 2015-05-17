@@ -19,17 +19,6 @@ Board.prototype.draftMove = function draftMove(position, move){
   return possibleWorld;
 };
 
-Board.prototype.select = function select(position) {
-  if(!this.promotingPawn()) {
-    this.clearSelection();
-    setInfo(this, position, 'selected', true);
-  }
-};
-
-Board.prototype.setPossibleMove = function setPossibleMove(position, move) {
-  setInfo(this, position, 'possibleMove', move);
-};
-
 Board.prototype.setMoved = function setMoved(position) {
   setInfo(this, position, 'hasMoved', true);
 };
@@ -53,14 +42,6 @@ Board.prototype.setPromotingPawn = function setPromotingPawn(position) {
 Board.prototype.promotePawn = function promotePawn(position, newType) {
   setInfo(this, position, 'piece', newType);
   this.setPromotingPawn(undefined);
-};
-
-Board.prototype.clearSelection = function clearSelection() {
-  var board = this;
-  _.each(board.listSquares(), function(square) {
-    setInfo(board, square.position, 'selected', false)
-    setInfo(board, square.position, 'possibleMove', false)
-  });
 };
 
 Board.prototype.clearBoard = function clearBoard() {
