@@ -12,7 +12,7 @@ var CheshireApp = React.createClass({
     if(this.state.board.promotingPawn) {
       promotionDialogue = (
         <PawnPromotionDialogue
-          side={this.state.board[this.state.board.promotingPawn[1]][this.state.board.promotingPawn[0]].side}
+          side={this.state.board[this.state.board.promotingPawn].side}
           position={this.state.board.promotingPawn}/>
       );
     }
