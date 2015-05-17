@@ -21,15 +21,26 @@ describe('GameBoardStore', function() {
     handleAction = AppDispatcher.register.mock.calls[0][0];
   });
 
+  describe('initial state', function() {
+    it('is white to play', function() {
+      expect(
+        GameBoardStore.getBoardState().sideToPlay
+      ).toEqual(Pieces.sides.WHITE);
+    });
+  });
+
   describe('when given a SELECT_SQUARE action', function(){
     describe('and no square is currently selected', function() {
-      describe('and the selected square is occupied', function() {
+      describe('and the selected square is a piece belonging to the player', function() {
         var selectedPosition = 'a1';
         beforeEach(function() {
           PossibleMoves = require('../../services/PossibleMoves');
           expect(
             GameBoardStore.getBoardState()[selectedPosition].piece
           ).toBeTruthy();
+          expect(
+            GameBoardStore.getBoardState()[selectedPosition].side
+          ).toEqual(Pieces.sides.WHITE);
         });
 
         it('marks the appropriate square as selected', function(){
@@ -66,6 +77,50 @@ describe('GameBoardStore', function() {
             })
           ).sort()).toEqual(['c3', 'g4']);
         });
+
+        it('does not advance to the next turn', function() {
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+        });
+      });
+
+      describe('and the selected square is a piece belonging to the opponent', function() {
+        var selectedPosition = 'a8';
+        beforeEach(function() {
+          PossibleMoves = require('../../services/PossibleMoves');
+          expect(
+            GameBoardStore.getBoardState()[selectedPosition].piece
+          ).toBeTruthy();
+          expect(
+            GameBoardStore.getBoardState()[selectedPosition].side
+          ).toEqual(Pieces.sides.BLACK);
+        });
+
+        it('does not mark the appropriate square as selected', function(){
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState()[selectedPosition].selected).toBeFalsy();
+        });
+
+        it('does not advance to the next turn', function() {
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+        });
       });
 
       describe('and the selected square is not occupied', function() {
@@ -83,6 +138,17 @@ describe('GameBoardStore', function() {
           });
 
           expect(GameBoardStore.getBoardState()[selectedPosition].selected).toBeFalsy();
+        });
+
+        it('does not advance to the next turn', function() {
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
         });
       });
     });
@@ -154,6 +220,17 @@ describe('GameBoardStore', function() {
             return square && square.possibleMove;
           })).toBeFalsy();
         });
+
+        it('advances to the next turn', function() {
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.BLACK);
+        });
       });
 
       describe('and the target square is not a possible move', function() {
@@ -190,6 +267,17 @@ describe('GameBoardStore', function() {
           expect(_.any(GameBoardStore.getBoardState(), function(square) {
             return square && square.possibleMove;
           })).toBeFalsy();
+        });
+
+        it('does not advance to the next turn', function() {
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.WHITE);
         });
       });
     });

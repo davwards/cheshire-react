@@ -14,18 +14,23 @@ var Events = require('../constants/Events');
 
 _board = new BoardModel();
 
+var _sideToPlay = Pieces.sides.WHITE;
 var _currentSelection;
 var _possibleMoves = {};
 
 function setSelected(position) {
   if(_currentSelection) {
-    if(_possibleMoves[position])
+    if(_possibleMoves[position]) {
       _possibleMoves[position](_board);
+      _sideToPlay = (_sideToPlay === Pieces.sides.WHITE ?
+                      Pieces.sides.BLACK :
+                      Pieces.sides.WHITE);
+    }
 
     _currentSelection = null;
     _possibleMoves = {};
   }
-  else if(_board.isOccupied(position)) {
+  else if(_board.info(position).side === _sideToPlay) {
     _currentSelection = position;
     _possibleMoves = PossibleMoves(_board, position);
   }
@@ -34,6 +39,7 @@ function setSelected(position) {
 var GameBoardStore = assign({}, EventEmitter.prototype, {
   getBoardState: function() {
     var state = _.tap(_.clone(_board.positions, true), function(b) {
+      b.sideToPlay = _sideToPlay;
       b.promotingPawn = _board.promotingPawn();
 
       if(_currentSelection)
