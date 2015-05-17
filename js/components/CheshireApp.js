@@ -8,6 +8,7 @@ var PawnPromotionDialogue = require('./PawnPromotionDialogue');
 var CheshireApp = React.createClass({
   render: function() {
     var promotionDialogue;
+    var enableSelection = true;
 
     if(this.state.board.promotingPawn) {
       promotionDialogue = (
@@ -15,11 +16,12 @@ var CheshireApp = React.createClass({
           side={this.state.board[this.state.board.promotingPawn].side}
           position={this.state.board.promotingPawn}/>
       );
+      enableSelection = false;
     }
 
     return (
       <section className="game-table">
-        <Board boardState={this.state.board}/>
+        <Board boardState={this.state.board} enableSelection={enableSelection}/>
         { promotionDialogue }
       </section>
     );
