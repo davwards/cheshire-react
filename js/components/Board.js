@@ -9,10 +9,10 @@ var Board = React.createClass({
 
     return (
       <table className="chess-board">
-        { _.map('12345678', function(file) { return (
-          <tr key={'file-' + file}>
-            { _.map('abcdefgh', function(rank) { return (
-              <Square key={rank+file} state={board[rank+file]} position={rank+file}/>
+        { _.map('12345678', function(rank) { return (
+          <tr key={'rank-' + rank}>
+            { _.map('abcdefgh', function(file) { return (
+              <Square key={file+rank} state={board[file+rank]} position={file+rank}/>
             ) }) }
           </tr>);
         }) }

@@ -6,8 +6,8 @@ function between(a, b, c) {
 
 function getDistance(square1, square2) {
   return {
-    rank: square1[0].charCodeAt() - square2[0].charCodeAt(),
-    file: parseInt(square1[1]) - parseInt(square2[1])
+    file: square1[0].charCodeAt() - square2[0].charCodeAt(),
+    rank: parseInt(square1[1]) - parseInt(square2[1])
   };
 }
 

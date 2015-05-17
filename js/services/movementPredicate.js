@@ -15,33 +15,33 @@ var EnPassantMove = require('./EnPassantMove');
 var PawnPromotionMove = require('./PawnPromotionMove');
 
 movementPredicates[Pieces.PAWN] = function pawn(position, board) {
-  var rank = position[0], file = position[1];
-  var direction, startingFile, promotionFile, opposingSide;
+  var file = position[0], rank = position[1];
+  var direction, startingRank, promotionRank, opposingSide;
 
   if(board.info(position).side == Pieces.sides.BLACK)
-    direction = -1, startingFile = '7', promotionFile = '1', opposingSide = Pieces.sides.WHITE;
+    direction = -1, startingRank = '7', promotionRank = '1', opposingSide = Pieces.sides.WHITE;
   else
-    direction = 1, startingFile = '2', promotionFile = '8', opposingSide = Pieces.sides.BLACK;
+    direction = 1, startingRank = '2', promotionRank = '8', opposingSide = Pieces.sides.BLACK;
 
   return function(candidate) {
-    var rankDistance = Math.abs(utils.getDistance(candidate.position, position).rank);
-    var fileDistance = utils.getDistance(candidate.position, position).file * direction;
+    var fileDistance = Math.abs(utils.getDistance(candidate.position, position).file);
+    var rankDistance = utils.getDistance(candidate.position, position).rank * direction;
 
-    var enPassantOpportunity = rankDistance == 1 && fileDistance == 1 &&
+    var enPassantOpportunity = fileDistance == 1 && rankDistance == 1 &&
                                candidate.position[0]+position[1] == board.lastPawnJump();
 
-    var jumpOpportunity = rankDistance == 0 && fileDistance == 2 && file == startingFile &&
+    var jumpOpportunity = fileDistance == 0 && rankDistance == 2 && rank == startingRank &&
                           !board.isOccupied(candidate.position) &&
-                          !board.isOccupied(rank + (parseInt(file)+direction));
+                          !board.isOccupied(file + (parseInt(rank)+direction));
 
-    var captureOpportunity = rankDistance == 1 && fileDistance == 1 &&
+    var captureOpportunity = fileDistance == 1 && rankDistance == 1 &&
                              candidate.info.side == opposingSide;
 
-    var stepOpportunity = rankDistance == 0 && fileDistance == 1 &&
+    var stepOpportunity = fileDistance == 0 && rankDistance == 1 &&
                           !board.isOccupied(candidate.position);
 
     var promotionOpportunity = (captureOpportunity || stepOpportunity) &&
-                               candidate.position[1] == promotionFile;
+                               candidate.position[1] == promotionRank;
 
 
     if(promotionOpportunity) return PawnPromotionMove(position, candidate.position);
@@ -57,7 +57,7 @@ movementPredicates[Pieces.KNIGHT] = function knight(position, board) {
 
     var distance = utils.getDistance(candidate.position, position);
 
-    if(Math.abs(distance.rank * distance.file) == 2)
+    if(Math.abs(distance.file * distance.rank) == 2)
       return BasicMove(position, candidate.position);
   }
 };
@@ -87,16 +87,16 @@ movementPredicates[Pieces.KING] = function king(position, board) {
   });
 
   var king = board.info(position);
-  var homeFile = (king.side == Pieces.sides.WHITE ? '1' : '8');
+  var homeRank = (king.side == Pieces.sides.WHITE ? '1' : '8');
 
   var castleOpportunity = function(candidate) {
     var distance = utils.getDistance(position, candidate.position);
-    var rankDirection = distance.rank / Math.abs(distance.rank);
+    var fileDirection = distance.file / Math.abs(distance.file);
 
     if(
-      Math.abs(distance.file) != 0 ||
-      Math.abs(distance.rank) != 2 ||
-      position[1] != homeFile ||
+      Math.abs(distance.rank) != 0 ||
+      Math.abs(distance.file) != 2 ||
+      position[1] != homeRank ||
       king.hasMoved ||
       _.any(detectThreats(position, board)) ||
       _.chain(board.listSquares())
@@ -108,7 +108,7 @@ movementPredicates[Pieces.KING] = function king(position, board) {
         .value()
     ) return false;
 
-    var rookPosition = (rankDirection == 1 ? 'a'+homeFile : 'h'+homeFile);
+    var rookPosition = (fileDirection == 1 ? 'a'+homeRank : 'h'+homeRank);
     var rookSpace = board.info(rookPosition);
 
     if(
