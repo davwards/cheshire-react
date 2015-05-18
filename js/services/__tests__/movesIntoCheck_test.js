@@ -24,11 +24,13 @@ describe('movesIntoCheck', function() {
       _.chain(candidates)
         .omit(movesIntoCheck(position, board))
         .pick(function(move) { return move; })
+        .keys()
         .value()
-    ).toEqual(moves);
+        .sort()
+    ).toEqual(moves.sort());
   }
 
-  it.only('detects when a knight moves into check', function() {
+  it('detects when a knight moves into check', function() {
     board.placePiece({piece: Pieces.KNIGHT, side: Pieces.sides.WHITE}, 'd5');
     board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'f5');
     board.placePiece({piece: Pieces.ROOK, side: Pieces.sides.BLACK}, 'a5');
