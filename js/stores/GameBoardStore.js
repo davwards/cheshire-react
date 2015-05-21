@@ -7,6 +7,7 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 var BoardModel = require('../models/Board');
 var PossibleMoves = require('../services/PossibleMoves');
+var gameOver = require('../services/gameOver');
 
 var Pieces = require('../constants/Pieces');
 var Actions = require('../constants/Actions');
@@ -41,6 +42,7 @@ var GameBoardStore = assign({}, EventEmitter.prototype, {
     var state = _.tap(_.clone(_board.positions, true), function(b) {
       b.sideToPlay = _sideToPlay;
       b.promotingPawn = _board.promotingPawn();
+      b.gameState = gameOver(_board, _sideToPlay);
 
       if(_currentSelection)
         b[_currentSelection].selected = true;

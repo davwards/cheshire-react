@@ -1,14 +1,15 @@
 jest.autoMockOff();
 jest.mock('../../dispatcher/AppDispatcher');
 jest.mock('../../services/PossibleMoves');
+jest.mock('../../services/gameOver');
 
 var _ = require('lodash');
-var BasicMove = require('../../services/BasicMove');
 
 describe('GameBoardStore', function() {
   var handleAction;
   var AppDispatcher;
   var PossibleMoves;
+  var gameOver;
   var Actions;
   var Pieces;
   var GameBoardStore;
@@ -160,6 +161,8 @@ describe('GameBoardStore', function() {
       var possibleMoveFunction;
 
       beforeEach(function(){
+        gameOver = require('../../services/gameOver');
+
         PossibleMoves = require('../../services/PossibleMoves');
         possibleMoveFunction = jest.genMockFunction();
         PossibleMoves.mockReturnValue({ a3: possibleMoveFunction });
@@ -230,6 +233,17 @@ describe('GameBoardStore', function() {
           });
 
           expect(GameBoardStore.getBoardState().sideToPlay).toEqual(Pieces.sides.BLACK);
+        });
+
+        it('sets the game state according to the gameOver result', function() {
+          gameOver.mockReturnValue('MORTALCOMBAT');
+
+          handleAction({
+            actionType: Actions.SELECT_SQUARE,
+            position: selectedPosition
+          });
+
+          expect(GameBoardStore.getBoardState().gameState).toEqual('MORTALCOMBAT');
         });
       });
 

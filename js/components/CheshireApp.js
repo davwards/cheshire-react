@@ -3,6 +3,7 @@ var React = require('react');
 var GameBoardStore = require('../stores/GameBoardStore');
 
 var Pieces = require('../constants/Pieces');
+var Game = require('../constants/Game');
 var Board = require('./Board.js');
 var PawnPromotionDialogue = require('./PawnPromotionDialogue');
 
@@ -24,7 +25,7 @@ var CheshireApp = React.createClass({
       <section className="game-table">
         <Board boardState={this.state.board} enableSelection={enableSelection}/>
         { promotionDialogue }
-        <p>{this._sideToPlay()} to play</p>
+        <p>{this._caption()}</p>
       </section>
     );
   },
@@ -43,6 +44,17 @@ var CheshireApp = React.createClass({
 
   _onChange: function() {
     this.setState(getAppState());
+  },
+
+  _caption: function() {
+    switch(this.state.board.gameState) {
+      case Game.CONTINUE:
+        return this._sideToPlay() + ' to play';
+      case Game.CHECKMATE:
+        return 'Checkmate!';
+      case Game.STALEMATE:
+        return 'Stalemate!';
+    }
   },
 
   _sideToPlay: function() {
