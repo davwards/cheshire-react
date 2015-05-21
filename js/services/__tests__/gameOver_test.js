@@ -19,11 +19,23 @@ describe('gameOver', function() {
     beforeEach(function() {
       board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'd1');
       board.placePiece({piece: Pieces.QUEEN, side: Pieces.sides.BLACK}, 'd2');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'e3');
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.BLACK}, 'd3');
     });
 
     it('returns CHECKMATE', function() {
       expect(gameOver(board, Pieces.sides.WHITE)).toEqual(Game.CHECKMATE);
+    });
+  });
+
+  describe('for a stalemate', function() {
+    beforeEach(function() {
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.WHITE}, 'h8');
+      board.placePiece({piece: Pieces.QUEEN, side: Pieces.sides.BLACK}, 'g6');
+      board.placePiece({piece: Pieces.KING, side: Pieces.sides.BLACK}, 'a1');
+    });
+
+    it('returns STALEMATE', function() {
+      expect(gameOver(board, Pieces.sides.WHITE)).toEqual(Game.STALEMATE);
     });
   });
 

@@ -10,5 +10,8 @@ module.exports = function PossibleMoves(board, position){
     moveMap[destination.position] = moveTo(destination);
     return moveMap;
   }, {});
-  return _.omit(allAvailableMoves, movesIntoCheck(position, board));
+
+  return _.omit(
+    allAvailableMoves, movesIntoCheck(position, board)
+  );
 };
