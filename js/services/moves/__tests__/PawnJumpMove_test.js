@@ -2,7 +2,7 @@ jest.autoMockOff();
 
 var _ = require('lodash');
 var PawnJumpMove = require('../PawnJumpMove');
-var BoardModel = require('../../models/Board');
+var BoardModel = require('../../../models/Board');
 
 describe('PawnJumpMove', function(){
   var board, start, end, executeMove;

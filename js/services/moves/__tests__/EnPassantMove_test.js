@@ -2,8 +2,8 @@ jest.autoMockOff();
 
 var _ = require('lodash');
 var EnPassantMove = require('../EnPassantMove');
-var BoardModel = require('../../models/Board');
-var Pieces = require('../../constants/Pieces');
+var BoardModel = require('../../../models/Board');
+var Pieces = require('../../../constants/Pieces');
 
 describe('EnPassantMove', function(){
   var board, start, end, executeMove;

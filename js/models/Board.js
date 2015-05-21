@@ -1,7 +1,6 @@
 var _ = require('lodash');
 
 var Pieces = require('../constants/Pieces');
-var BasicMove = require('../services/BasicMove');
 
 var Board = function Board() {
   this.positions = initialPosition();

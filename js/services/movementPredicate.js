@@ -8,11 +8,11 @@ var _ = require('lodash');
 var utils = require('./MovementUtils');
 var Pieces = require('../constants/Pieces');
 var detectThreats = require('./detectThreats');
-var BasicMove = require('./BasicMove');
-var CastleMove = require('./CastleMove');
-var PawnJumpMove = require('./PawnJumpMove');
-var EnPassantMove = require('./EnPassantMove');
-var PawnPromotionMove = require('./PawnPromotionMove');
+var BasicMove = require('./moves/BasicMove');
+var CastleMove = require('./moves/CastleMove');
+var PawnJumpMove = require('./moves/PawnJumpMove');
+var EnPassantMove = require('./moves/EnPassantMove');
+var PawnPromotionMove = require('./moves/PawnPromotionMove');
 
 movementPredicates[Pieces.PAWN] = function pawn(position, board) {
   var file = position[0], rank = position[1];

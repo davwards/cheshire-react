@@ -2,7 +2,7 @@ jest.autoMockOff();
 
 var _ = require('lodash');
 var BasicMove = require('../BasicMove');
-var BoardModel = require('../../models/Board');
+var BoardModel = require('../../../models/Board');
 
 describe('BasicMove', function(){
   var board, start, destination, executeMove;

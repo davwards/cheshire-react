@@ -1,20 +1,20 @@
 jest.autoMockOff();
 
-jest.mock('../BasicMove');
-jest.mock('../CastleMove');
-jest.mock('../PawnJumpMove');
-jest.mock('../EnPassantMove');
-jest.mock('../PawnPromotionMove');
+jest.mock('../moves/BasicMove');
+jest.mock('../moves/CastleMove');
+jest.mock('../moves/PawnJumpMove');
+jest.mock('../moves/EnPassantMove');
+jest.mock('../moves/PawnPromotionMove');
 
 var _ = require('lodash');
 
 var Pieces = require('../../constants/Pieces');
 var BoardModel = require('../../models/Board');
-var BasicMove = require('../BasicMove');
-var CastleMove = require('../CastleMove');
-var PawnJumpMove = require('../PawnJumpMove');
-var EnPassantMove = require('../EnPassantMove');
-var PawnPromotionMove = require('../PawnPromotionMove');
+var BasicMove = require('../moves/BasicMove');
+var CastleMove = require('../moves/CastleMove');
+var PawnJumpMove = require('../moves/PawnJumpMove');
+var EnPassantMove = require('../moves/EnPassantMove');
+var PawnPromotionMove = require('../moves/PawnPromotionMove');
 
 var movementPredicate = require('../movementPredicate');
 
