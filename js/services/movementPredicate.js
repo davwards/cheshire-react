@@ -4,7 +4,6 @@ module.exports = function movementPredicate(position, board) {
   return movementPredicates[board.info(position).piece](position, board);
 };
 
-var _ = require('lodash');
 var utils = require('./MovementUtils');
 var Pieces = require('../constants/Pieces');
 var linePiece = require('./movementRules/linePiece');
@@ -14,9 +13,7 @@ movementPredicates[Pieces.PAWN] = require('./movementRules/pawnMovement');
 
 movementPredicates[Pieces.KNIGHT] = require('./movementRules/knightMovement');
 
-movementPredicates[Pieces.ROOK] = function rook(position, board) {
-  return linePiece(position, board, utils.clearHorizontalOrVerticalPath);
-};
+movementPredicates[Pieces.ROOK] = require('./movementRules/rookMovement');
 
 movementPredicates[Pieces.BISHOP] = function bishop(position, board) {
   return linePiece(position, board, utils.clearDiagonalPath);
