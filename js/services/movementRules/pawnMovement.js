@@ -1,7 +1,6 @@
 var _ = require('lodash');
 var utils = require('../MovementUtils');
 var Pieces = require('../../constants/Pieces');
-var detectThreats = require('../detectThreats');
 
 var BasicMove = require('../moves/BasicMove');
 var PawnJumpMove = require('../moves/PawnJumpMove');
