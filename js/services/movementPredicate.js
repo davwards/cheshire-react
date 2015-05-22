@@ -15,9 +15,7 @@ movementPredicates[Pieces.KNIGHT] = require('./movementRules/knightMovement');
 
 movementPredicates[Pieces.ROOK] = require('./movementRules/rookMovement');
 
-movementPredicates[Pieces.BISHOP] = function bishop(position, board) {
-  return linePiece(position, board, utils.clearDiagonalPath);
-};
+movementPredicates[Pieces.BISHOP] = require('./movementRules/bishopMovement');
 
 movementPredicates[Pieces.QUEEN] = function queen(position, board) {
   return linePiece(position, board,

@@ -40,44 +40,6 @@ describe('movementPredicate', function() {
     expect(movementPredicate(start, board)({info: board.info(end), position: end})).toBeFalsy();
   }
 
-  describe('A bishop', function() {
-    var whiteBishop = { piece: Pieces.BISHOP, side: Pieces.sides.WHITE };
-    var blackBishop = { piece: Pieces.BISHOP, side: Pieces.sides.BLACK };
-
-    it('can move diagonally', function() {
-      board.placePiece(whiteBishop, 'c2');
-      board.placePiece(blackBishop, 'e6');
-
-      expectBasicMoves('c2', ['a4', 'b1', 'b3', 'd1', 'd3', 'e4', 'f5', 'g6', 'h7']);
-      expectBasicMoves('e6', ['f7', 'g8', 'f5', 'g4', 'h3', 'd7', 'c8', 'd5', 'c4', 'b3', 'a2']);
-    });
-
-    it('can capture opposing but not allied pieces', function() {
-      board.placePiece(whiteBishop, 'c2');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd3');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'a4');
-
-      expectToHaveMove('c2', 'd3');
-      expectNotToHaveMove('c2', 'a4');
-
-      board.placePiece(blackBishop, 'e6');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'f7');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'h3');
-
-      expectToHaveMove('e6', 'f7');
-      expectNotToHaveMove('e6', 'h3');
-    });
-
-    it('cannot move past obstacles', function() {
-      board.placePiece(blackBishop, 'e6');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.WHITE}, 'f7');
-      board.placePiece({piece: Pieces.PAWN, side: Pieces.sides.BLACK}, 'd7');
-
-      expectNotToHaveMove('e6', 'g8');
-      expectNotToHaveMove('e6', 'c8');
-    });
-  });
-
   describe('A queen', function() {
     var whiteQueen = { piece: Pieces.QUEEN, side: Pieces.sides.WHITE };
     var blackQueen = { piece: Pieces.QUEEN, side: Pieces.sides.BLACK };
