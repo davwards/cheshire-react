@@ -12,16 +12,7 @@ var BasicMove = require('./moves/BasicMove');
 
 movementPredicates[Pieces.PAWN] = require('./movementRules/pawnMovement');
 
-movementPredicates[Pieces.KNIGHT] = function knight(position, board) {
-  return function(candidate) {
-    if(board.info(position).side == candidate.info.side) return false;
-
-    var distance = utils.getDistance(candidate.position, position);
-
-    if(Math.abs(distance.file * distance.rank) == 2)
-      return BasicMove(position, candidate.position);
-  }
-};
+movementPredicates[Pieces.KNIGHT] = require('./movementRules/knightMovement');
 
 movementPredicates[Pieces.ROOK] = function rook(position, board) {
   return linePiece(position, board, utils.clearHorizontalOrVerticalPath);
