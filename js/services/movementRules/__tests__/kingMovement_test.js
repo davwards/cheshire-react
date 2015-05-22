@@ -10,6 +10,8 @@ var BoardModel = require('../../../models/Board');
 var BasicMove = require('../../moves/BasicMove');
 var CastleMove = require('../../moves/CastleMove');
 
+var utils = require('./MoveRuleTestUtils');
+
 var kingMovement = require('../kingMovement');
 
 describe('A king', function() {
@@ -22,26 +24,20 @@ describe('A king', function() {
     CastleMove.mockImpl(function(start, dest) { return 'CASTLE MOVE'; });
   });
 
-  function expectMoves(position, moveSet, moveType) {
-    expect(
-      _.chain(board.listSquares())
-        .select(function(square) {
-          return kingMovement(position, board)(square) == moveType; })
-        .map(function(square) {
-          return square.position; })
-        .value().sort()
-    ).toEqual(moveSet.sort());
-  }
+  function expectBasicMoves(position, moveSet) {
+    utils.expectMoves(kingMovement, position, board, moveSet, 'BASIC MOVE');
+  };
 
-  function expectBasicMoves(position, moveSet)    { expectMoves(position, moveSet, 'BASIC MOVE'); };
-  function expectCastleMoves(position, moveSet)   { expectMoves(position, moveSet, 'CASTLE MOVE'); };
+  function expectCastleMoves(position, moveSet) {
+    utils.expectMoves(kingMovement, position, board, moveSet, 'CASTLE MOVE');
+  };
 
   function expectToHaveMove(start, end) {
-    expect(kingMovement(start, board)({info: board.info(end), position: end})).toBeTruthy();
+    utils.expectToHaveMove(kingMovement, board, start, end);
   }
 
   function expectNotToHaveMove(start, end) {
-    expect(kingMovement(start, board)({info: board.info(end), position: end})).toBeFalsy();
+    utils.expectNotToHaveMove(kingMovement, board, start, end);
   }
 
   var whiteKing = { piece: Pieces.KING, side: Pieces.sides.WHITE };

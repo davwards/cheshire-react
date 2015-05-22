@@ -8,6 +8,8 @@ var Pieces = require('../../../constants/Pieces');
 var BoardModel = require('../../../models/Board');
 var BasicMove = require('../../moves/BasicMove');
 
+var utils = require('./MoveRuleTestUtils');
+
 var knightMovement = require('../knightMovement');
 
 describe('A knight', function() {
@@ -19,26 +21,10 @@ describe('A knight', function() {
     BasicMove.mockImpl(function(start, dest) { return 'BASIC MOVE'; });
   });
 
-  function expectMoves(position, moveSet, moveType) {
-    expect(
-      _.chain(board.listSquares())
-        .select(function(square) {
-          return knightMovement(position, board)(square) == moveType; })
-        .map(function(square) {
-          return square.position; })
-        .value().sort()
-    ).toEqual(moveSet.sort());
+  function expectBasicMoves(position, moveSet) {
+    utils.expectMoves(knightMovement, position, board, moveSet, 'BASIC MOVE');
   }
 
-  function expectBasicMoves(position, moveSet)    { expectMoves(position, moveSet, 'BASIC MOVE'); };
-
-  function expectToHaveMove(start, end) {
-    expect(knightMovement(start, board)({info: board.info(end), position: end})).toBeTruthy();
-  }
-
-  function expectNotToHaveMove(start, end) {
-    expect(knightMovement(start, board)({info: board.info(end), position: end})).toBeFalsy();
-  }
   var whiteKnight = { piece: Pieces.KNIGHT, side: Pieces.sides.WHITE };
   var blackKnight = { piece: Pieces.KNIGHT, side: Pieces.sides.BLACK };
 

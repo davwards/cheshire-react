@@ -14,6 +14,8 @@ var PawnJumpMove = require('../../moves/PawnJumpMove');
 var EnPassantMove = require('../../moves/EnPassantMove');
 var PawnPromotionMove = require('../../moves/PawnPromotionMove');
 
+var utils = require('./MoveRuleTestUtils');
+
 var pawnMovement = require('../pawnMovement');
 
 describe('A pawn', function() {
@@ -29,39 +31,28 @@ describe('A pawn', function() {
     PawnPromotionMove.mockImpl(function(start, dest) { return 'PAWN PROMOTION MOVE'; });
   });
 
-  function expectMoves(rule, position, moveSet, moveType) {
-    expect(
-      _.chain(board.listSquares())
-        .select(function(square) {
-          return rule(position, board)(square) == moveType; })
-        .map(function(square) {
-          return square.position; })
-        .value().sort()
-    ).toEqual(moveSet.sort());
-  }
-
   function expectToHaveMove(start, end) {
-    expect(pawnMovement(start, board)({info: board.info(end), position: end})).toBeTruthy();
+    utils.expectToHaveMove(pawnMovement, board, start, end);
   }
 
   function expectNotToHaveMove(start, end) {
-    expect(pawnMovement(start, board)({info: board.info(end), position: end})).toBeFalsy();
+    utils.expectNotToHaveMove(pawnMovement, board, start, end);
   }
 
   function expectBasicMoves(position, moveSet) {
-    expectMoves(pawnMovement, position, moveSet, 'BASIC MOVE');
+    utils.expectMoves(pawnMovement, position, board, moveSet, 'BASIC MOVE');
   };
 
   function expectPawnJumpMoves(position, moveSet) {
-    expectMoves(pawnMovement, position, moveSet, 'PAWN JUMP MOVE');
+    utils.expectMoves(pawnMovement, position, board, moveSet, 'PAWN JUMP MOVE');
   }
 
   function expectEnPassantMoves(position, moveSet) {
-    expectMoves(pawnMovement, position, moveSet, 'EN PASSANT MOVE');
+    utils.expectMoves(pawnMovement, position, board, moveSet, 'EN PASSANT MOVE');
   }
 
   function expectPawnPromotionMoves(position, moveSet) {
-    expectMoves(pawnMovement, position, moveSet, 'PAWN PROMOTION MOVE');
+    utils.expectMoves(pawnMovement, position, board, moveSet, 'PAWN PROMOTION MOVE');
   }
 
   var whitePawn1 = { piece: Pieces.PAWN, side: Pieces.sides.WHITE };
