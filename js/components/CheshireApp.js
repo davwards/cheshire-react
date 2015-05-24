@@ -25,7 +25,7 @@ var CheshireApp = React.createClass({
       <section className="game-table">
         <Board boardState={this.state.board} enableSelection={enableSelection}/>
         { promotionDialogue }
-        <p>{this._caption()}</p>
+        <p className="game-caption">{this._caption()}</p>
       </section>
     );
   },

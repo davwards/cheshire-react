@@ -1,3 +1,5 @@
+$square-size: 70px;
+
 .chess-board {
 
   $light-square: #fff;
@@ -7,12 +9,15 @@
   $possible-move-light: #ffc;
   $possible-move-dark: #eeb;
 
+  min-width: 8*$square-size;
+  min-height: 8*$square-size;
+
   font-size: 48px;
   border-collapse: collapse;
 
   td {
-    width: 70px;
-    height: 70px;
+    width: $square-size;
+    height: $square-size;
     border: solid black 1px;
     text-align: center;
     background: $light-square;
@@ -45,4 +50,8 @@
       }
     }
   }
+}
+
+.game-caption {
+  text-align: center;
 }
