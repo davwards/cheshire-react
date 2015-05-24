@@ -25,6 +25,11 @@ gulp.task('sass', function() {
     .pipe(gulp.dest('./dist/'));
 });
 
+gulp.task('html', function() {
+  return gulp.src('./index.html')
+    .pipe(gulp.dest('./dist/'));
+});
+
 gulp.watch('scss/*.scss', ['sass']);
 
-gulp.task('default', ['js', 'sass']);
+gulp.task('default', ['js', 'sass', 'html']);
