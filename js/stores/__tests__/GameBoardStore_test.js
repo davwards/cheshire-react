@@ -1,6 +1,6 @@
 jest.autoMockOff();
 jest.mock('../../dispatcher/AppDispatcher');
-jest.mock('../../services/PossibleMoves');
+jest.mock('../../services/possibleMoves');
 jest.mock('../../services/gameOver');
 
 var _ = require('lodash');
@@ -8,7 +8,7 @@ var _ = require('lodash');
 describe('GameBoardStore', function() {
   var handleAction;
   var AppDispatcher;
-  var PossibleMoves;
+  var possibleMoves;
   var gameOver;
   var Actions;
   var Pieces;
@@ -35,7 +35,7 @@ describe('GameBoardStore', function() {
       describe('and the selected square is a piece belonging to the player', function() {
         var selectedPosition = 'a1';
         beforeEach(function() {
-          PossibleMoves = require('../../services/PossibleMoves');
+          possibleMoves = require('../../services/possibleMoves');
           expect(
             GameBoardStore.getBoardState()[selectedPosition].piece
           ).toBeTruthy();
@@ -54,7 +54,7 @@ describe('GameBoardStore', function() {
         });
 
         it('highlights the selected piece\'s possible moves', function() {
-          PossibleMoves.mockReturnValue({
+          possibleMoves.mockReturnValue({
             a1: undefined,
             a2: undefined,
             g4: 'MOVE TO g4',
@@ -94,7 +94,7 @@ describe('GameBoardStore', function() {
       describe('and the selected square is a piece belonging to the opponent', function() {
         var selectedPosition = 'a8';
         beforeEach(function() {
-          PossibleMoves = require('../../services/PossibleMoves');
+          possibleMoves = require('../../services/possibleMoves');
           expect(
             GameBoardStore.getBoardState()[selectedPosition].piece
           ).toBeTruthy();
@@ -163,9 +163,9 @@ describe('GameBoardStore', function() {
       beforeEach(function(){
         gameOver = require('../../services/gameOver');
 
-        PossibleMoves = require('../../services/PossibleMoves');
+        possibleMoves = require('../../services/possibleMoves');
         possibleMoveFunction = jest.genMockFunction();
-        PossibleMoves.mockReturnValue({ a3: possibleMoveFunction });
+        possibleMoves.mockReturnValue({ a3: possibleMoveFunction });
 
         expect(GameBoardStore.getBoardState()[sourcePosition].piece).toBeTruthy();
 

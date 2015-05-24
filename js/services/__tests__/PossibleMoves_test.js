@@ -5,16 +5,16 @@ jest.mock('../movementPredicate');
 var _ = require('lodash');
 
 var BoardModel = require('../../models/Board');
-var PossibleMoves;
+var possibleMoves;
 var movementPredicate;
 var movesIntoCheck;
 var board;
 
-describe('Possible Moves', function() {
+describe('possibleMoves', function() {
   beforeEach(function(){
     movementPredicate = require('../movementPredicate');
     movesIntoCheck = require('../movesIntoCheck');
-    PossibleMoves = require('../PossibleMoves');
+    possibleMoves = require('../possibleMoves');
 
     board = new BoardModel();
     board.clearBoard();
@@ -38,7 +38,7 @@ describe('Possible Moves', function() {
       };
     });
 
-    expect(PossibleMoves(board, 'd5')).toEqual({
+    expect(possibleMoves(board, 'd5')).toEqual({
       d1: 'MOVE TO d1',
       d2: 'MOVE TO d2',
       d3: 'MOVE TO d3',

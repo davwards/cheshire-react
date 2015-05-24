@@ -6,7 +6,7 @@ var _ = require('lodash');
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 var BoardModel = require('../models/Board');
-var PossibleMoves = require('../services/PossibleMoves');
+var possibleMoves = require('../services/possibleMoves');
 var gameOver = require('../services/gameOver');
 
 var Pieces = require('../constants/Pieces');
@@ -33,7 +33,7 @@ function setSelected(position) {
   }
   else if(_board.info(position).side === _sideToPlay) {
     _currentSelection = position;
-    _possibleMoves = PossibleMoves(_board, position);
+    _possibleMoves = possibleMoves(_board, position);
   }
 }
 
