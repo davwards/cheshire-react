@@ -47,6 +47,9 @@ var CheshireApp = React.createClass({
   },
 
   _caption: function() {
+    if(this.state.board.promotingPawn)
+      return 'Pawn promotes!';
+
     switch(this.state.board.gameState) {
       case Game.CONTINUE:
         return this._sideToPlay() + ' to play';
