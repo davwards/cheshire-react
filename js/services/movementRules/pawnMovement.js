@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var utils = require('../MovementUtils');
+var utils = require('./MovementUtils');
 var Pieces = require('../../constants/Pieces');
 
 var BasicMove = require('../moves/BasicMove');

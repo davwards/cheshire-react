@@ -1,4 +1,4 @@
-var utils = require('../MovementUtils');
+var utils = require('./MovementUtils');
 var BasicMove = require('../moves/BasicMove');
 
 module.exports = function knightMovement(position, board) {
